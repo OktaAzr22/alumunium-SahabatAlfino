@@ -1,44 +1,39 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     public function showLogin()
     {
-        if (Auth::check()) {
-            return $this->redirectByRole(Auth::user());
-        }
-
         return view('auth.login');
     }
 
     public function showRegister()
     {
-        if (Auth::check()) {
-            return $this->redirectByRole(Auth::user());
-        }
-
         return view('auth.register');
     }
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+
+            'email' => 'required|email|unique:users,email',
+
+            'password' => 'required|min:6|confirmed',
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+
+            // otomatis hash dari model
+            'password' => $validated['password'],
         ]);
 
         $user->assignRole('user');
@@ -50,19 +45,23 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
+        if (Auth::attempt($credentials)) {
 
             $request->session()->regenerate();
 
             return $this->redirectByRole(Auth::user());
         }
 
-        return back()->with('error', 'Email atau password salah');
+        return back()
+            ->withErrors([
+                'email' => 'Email atau password salah',
+            ])
+            ->onlyInput('email');
     }
 
     public function logout(Request $request)
@@ -70,9 +69,10 @@ class AuthController extends Controller
         Auth::logout();
 
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect()->route('login');
     }
 
     private function redirectByRole($user)

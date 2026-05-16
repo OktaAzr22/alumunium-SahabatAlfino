@@ -1,3 +1,5 @@
+<!-- resources/views/auth/login.blade.php -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,21 +9,42 @@
 
 <h2>Login</h2>
 
-@if(session('error'))
-    <p style="color:red">{{ session('error') }}</p>
+@if ($errors->any())
+    <div style="color:red">
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
 @endif
 
-<form method="POST" action="/login">
+<form method="POST" action="{{ route('login') }}">
     @csrf
 
-    <input type="email" name="email" placeholder="Email"><br><br>
+    <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value="{{ old('email') }}"
+    >
+    <br><br>
 
-    <input type="password" name="password" placeholder="Password"><br><br>
+    <input
+        type="password"
+        name="password"
+        placeholder="Password"
+    >
+    <br><br>
 
-    <button type="submit">Login</button>
+    <button type="submit">
+        Login
+    </button>
 </form>
 
-<a href="/register">Register</a>
+<br>
+
+<a href="{{ route('register') }}">
+    Register
+</a>
 
 </body>
 </html>

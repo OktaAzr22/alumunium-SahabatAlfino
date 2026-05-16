@@ -1,31 +1,119 @@
+
+
 <?php
 
+use App\Http\Controllers\AccessoryController;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/register', [AuthController::class, 'showRegister']);
-Route::post('/register', [AuthController::class, 'register']);
+// ======================
+// GUEST
+// ======================
 
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::middleware('guest')->group(function () {
 
+    Route::get('/login', [AuthController::class, 'showLogin'])
+        ->name('login');
+
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/register', [AuthController::class, 'showRegister'])
+        ->name('register');
+
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+
+// ======================
+// LOGOUT
+// ======================
+
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
+
+// ======================
+// USER
+// ======================
 
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/dashboard', fn() => view('user.dashboard'));
+
+    Route::get('/dashboard',
+        fn() => view('user.dashboard'));
+
+    Route::get('/products', [
+        ProductController::class,
+        'publicIndex'
+    ]);
+
+    Route::get('/products/{product}', [
+        ProductController::class,
+        'publicShow'
+    ]);
+
+    Route::get('/orders/create', [
+        OrderController::class,
+        'create'
+    ]);
+
+    Route::post('/orders', [
+        OrderController::class,
+        'store'
+    ]);
+
+    Route::get('/my-orders', [
+        OrderController::class,
+        'myOrders'
+    ]);
+
+    Route::get('/my-orders/{order}', [
+        OrderController::class,
+        'showMyOrder'
+    ]);
+
 });
 
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', fn() => view('admin.dashboard'));
-});
+// ======================
+// ADMIN
+// ======================
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get('/', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+
+        Route::resource('products', ProductController::class);
+        Route::get('/orders', [OrderController::class, 'index']);
+        Route::resource('accessories', AccessoryController::class);
+        Route::resource('materials',MaterialController::class);
+    });
 
 
-Route::middleware(['auth', 'role:super_admin'])->group(function () {
-    Route::get('/super-admin', fn() => view('superadmin.dashboard'));
-});
+// ======================
+// SUPER ADMIN
+// ======================
+
+Route::middleware(['auth', 'role:super_admin'])
+    ->prefix('super-admin')
+    ->name('superadmin.')
+    ->group(function () {
+
+        Route::get('/', function () {
+            return view('superadmin.dashboard');
+        })->name('dashboard');
+    });
