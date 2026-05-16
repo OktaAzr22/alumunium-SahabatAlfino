@@ -3,11 +3,13 @@
 <?php
 
 use App\Http\Controllers\AccessoryController;
+use App\Http\Controllers\Admin\OrderAdminController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 
 Route::get('/', function () {
@@ -81,6 +83,11 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         'showMyOrder'
     ]);
 
+    Route::post(
+        '/orders/{order}/payment',
+        [PaymentController::class, 'store']
+    );
+
 });
 
 
@@ -98,9 +105,25 @@ Route::middleware(['auth', 'role:admin'])
         })->name('dashboard');
 
         Route::resource('products', ProductController::class);
-        Route::get('/orders', [OrderController::class, 'index']);
+        // Route::get('/orders', [OrderController::class, 'index']);
         Route::resource('accessories', AccessoryController::class);
         Route::resource('materials',MaterialController::class);
+
+        // 
+        Route::get(
+        '/orders',
+        [OrderAdminController::class, 'index']
+    );
+
+    Route::get(
+        '/orders/{order}',
+        [OrderAdminController::class, 'show']
+    );
+
+    Route::put(
+        '/orders/{order}',
+        [OrderAdminController::class, 'update']
+    );
     });
 
 

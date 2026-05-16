@@ -19,16 +19,12 @@ class Accessory extends Model
     // RELATION
     // =========================
     public function orderDetails()
-    {
-        return $this->belongsToMany(
-            OrderDetail::class,
-            'order_accessories'
-        )
-        ->withPivot([
-            'qty',
-            'price',
-            'subtotal'
-        ])
-        ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(
+        OrderDetail::class,
+        'order_accessories',
+        'accessory_id',
+        'order_detail_id'
+    );
+}
 }

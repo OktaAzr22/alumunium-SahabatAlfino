@@ -120,11 +120,23 @@ class OrderController extends Controller
             $heightMeter = $height / 100;
 
             // =========================
-            // HITUNG LUAS
+            // HITUNG TOTAL AREA
             // =========================
             $area =
-                $lengthMeter *
-                $widthMeter;
+                (
+                    ($lengthMeter * $heightMeter) * 2
+                ) +
+                (
+                    ($widthMeter * $heightMeter) * 2
+                ) +
+                (
+                    $lengthMeter * $widthMeter
+                );
+
+            $area = round(
+                $area,
+                2
+            );
 
             // =========================
             // HARGA DASAR PRODUK
@@ -135,11 +147,14 @@ class OrderController extends Controller
                 $product->base_price;
 
             // =========================
-            // HITUNG KELILING FRAME
+            // HITUNG KEBUTUHAN FRAME
             // =========================
             $frameLength =
-                ($lengthMeter * 2) +
-                ($heightMeter * 2);
+                (
+                    ($lengthMeter * 4) +
+                    ($widthMeter * 4) +
+                    ($heightMeter * 4)
+                );
 
             // =========================
             // KEBUTUHAN MATERIAL
@@ -197,13 +212,16 @@ class OrderController extends Controller
                 'user_id'
                     => Auth::id(),
 
+                'product_id'
+                    => $product->id,
+
                 'code'
                     => 'ORD-' .
                     now()->format('YmdHis') .
                     rand(100, 999),
 
-                'status'
-                    => 'pending',
+                'status_id'
+                    => 1,
 
                 'user_notes'
                     => $request->notes,
@@ -236,7 +254,7 @@ class OrderController extends Controller
                     => $height,
 
                 'area'
-                    => round($area, 2),
+                    => $area,
 
                 'qty'
                     => $qty,
@@ -267,43 +285,51 @@ class OrderController extends Controller
             // =========================
             // ACCESSORIES
             // =========================
-            if ($request->accessories) {
+            // =========================
+// ACCESSORIES
+// =========================
+if ($request->accessories) {
 
-                $accessories = Accessory::whereIn(
-                    'id',
-                    $request->accessories
-                )->get();
+    $accessories = Accessory::whereIn(
+        'id',
+        $request->accessories
+    )->get();
 
-                foreach ($accessories as $accessory) {
+    foreach ($accessories as $accessory) {
 
-                    $qtyAccessory = 1;
+        $qtyAccessory = 1;
 
-                    $subtotalAccessory =
-                        $accessory->price *
-                        $qtyAccessory;
+        $subtotalAccessory =
+            $accessory->price *
+            $qtyAccessory *
+            $qty;
 
-                    // tambah ke estimasi
-                    $estimatedPrice +=
-                        $subtotalAccessory;
+        // =========================
+        // TAMBAH KE ESTIMASI
+        // =========================
+        $estimatedPrice +=
+            $subtotalAccessory;
 
-                    // attach ke order detail
-                    $orderDetail
-                        ->accessories()
-                        ->attach(
-                            $accessory->id,
-                            [
-                                'qty'
-                                    => $qtyAccessory,
+        // =========================
+        // ATTACH ACCESSORY
+        // =========================
+        $orderDetail
+            ->accessories()
+            ->attach(
+                $accessory->id,
+                [
+                    'qty'
+                        => $qtyAccessory,
 
-                                'price'
-                                    => $accessory->price,
+                    'price'
+                        => $accessory->price,
 
-                                'subtotal'
-                                    => $subtotalAccessory,
-                            ]
-                        );
-                }
-            }
+                    'subtotal'
+                        => $subtotalAccessory,
+                ]
+            );
+    }
+}
 
             // =========================
             // UPDATE TOTAL ESTIMASI
@@ -326,28 +352,30 @@ class OrderController extends Controller
     }
 
     // =========================
-    // USER DETAIL ORDER
-    // =========================
-    public function showMyOrder(Order $order)
-    {
-        if (
-            $order->user_id
-            != Auth::id()
-        ) {
-            abort(403);
-        }
-
-        $order->load([
-            'product',
-            'detail.material',
-            'accessories'
-        ]);
-
-        return view(
-            'user.orders.show',
-            compact('order')
-        );
+// USER DETAIL ORDER
+// =========================
+public function showMyOrder(Order $order)
+{
+    if (
+        $order->user_id
+        != Auth::id()
+    ) {
+        abort(403);
     }
+
+    $order->load([
+        'product',
+        'detail.material',
+        'detail.accessories',
+        'payments',
+        'status',
+    ]);
+
+    return view(
+        'user.orders.show',
+        compact('order')
+    );
+}
 
     // =========================
     // USER ORDER HISTORY
@@ -355,7 +383,8 @@ class OrderController extends Controller
     public function myOrders()
     {
         $orders = Order::with([
-            'product'
+            'product',
+            'status',
         ])
         ->where(
             'user_id',
@@ -370,23 +399,5 @@ class OrderController extends Controller
         );
     }
 
-    // =========================
-    // ADMIN ORDER LIST
-    // =========================
-    public function index()
-    {
-        $orders = Order::with([
-            'user',
-            'product',
-            'detail.material',
-            'accessories'
-        ])
-        ->latest()
-        ->get();
-
-        return view(
-            'admin.orders.index',
-            compact('orders')
-        );
-    }
+    
 }

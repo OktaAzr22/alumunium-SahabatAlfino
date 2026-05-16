@@ -10,19 +10,27 @@ class Order extends Model
 
         'user_id',
 
+        'product_id',
+
         'code',
 
         'estimated_price',
 
         'final_price',
 
-        'status',
+        'status_id',
 
         'user_notes',
 
         'admin_notes',
 
         'design_file',
+
+        'service_price',
+
+'other_price',
+
+'dp_amount',
 
         'finished_at',
     ];
@@ -33,7 +41,7 @@ class Order extends Model
     ];
 
     // =========================
-    // RELATION
+    // RELATION USER
     // =========================
     public function user()
     {
@@ -42,6 +50,19 @@ class Order extends Model
         );
     }
 
+    // =========================
+    // RELATION PRODUCT
+    // =========================
+    public function product()
+    {
+        return $this->belongsTo(
+            Product::class
+        );
+    }
+
+    // =========================
+    // RELATION DETAIL
+    // =========================
     public function detail()
     {
         return $this->hasOne(
@@ -49,15 +70,41 @@ class Order extends Model
         );
     }
 
-    public function product()
+    // =========================
+    // RELATION STATUS
+    // =========================
+    public function status()
     {
-        return $this->hasOneThrough(
-            Product::class,
-            OrderDetail::class,
-            'order_id', // foreign key order_details
-            'id',       // foreign key products
-            'id',       // local key orders
-            'product_id'// local key order_details
+        return $this->belongsTo(
+            OrderStatus::class,
+            'status_id'
         );
+    }
+
+    // =========================
+    // RELATION PAYMENTS
+    // =========================
+    public function payments()
+    {
+        return $this->hasMany(
+            Payment::class
+        );
+    }
+
+    // =========================
+    // RELATION ACCESSORIES
+    // =========================
+    public function accessories()
+    {
+        return $this->belongsToMany(
+            Accessory::class,
+            'order_accessories'
+        )
+        ->withPivot([
+            'qty',
+            'price',
+            'subtotal'
+        ])
+        ->withTimestamps();
     }
 }

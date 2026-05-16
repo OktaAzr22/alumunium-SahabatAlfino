@@ -37,7 +37,7 @@
             Status:
 
             <strong>
-                {{ strtoupper($order->status) }}
+                {{ strtoupper($order->status->name) }}
             </strong>
 
         </p>

@@ -1,5 +1,3 @@
-
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -8,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
@@ -16,6 +17,13 @@ return new class extends Migration
 
             // user
             $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+                // =========================
+            // PRODUCT
+            // =========================
+            $table->foreignId('product_id')
                 ->constrained()
                 ->cascadeOnDelete();
 
@@ -32,12 +40,10 @@ return new class extends Migration
                 ->nullable();
 
             // status
-            $table->enum('status', [
-                'pending',
-                'diproses',
-                'selesai',
-                'dibatalkan'
-            ])->default('pending');
+            $table->foreignId('status_id')
+                ->nullable()
+                ->constrained('order_statuses')
+                ->nullOnDelete();
 
             // catatan customer
             $table->text('user_notes')
@@ -59,6 +65,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('orders');

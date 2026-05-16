@@ -1,61 +1,63 @@
-@extends('layouts.app')
-
 @section('content')
-
-<h1>Daftar Order</h1>
-
-@if(session('success'))
-    <p>{{ session('success') }}</p>
-@endif
+@extends('layouts.app')
 
 <table border="1" cellpadding="10">
 
     <tr>
+
         <th>Kode</th>
-        <th>User</th>
+
+        <th>Customer</th>
+
         <th>Produk</th>
+
         <th>Status</th>
-        <th>Total Harga</th>
+
+        <th>Estimasi</th>
+
+        <th>Harga Final</th>
+
         <th>Aksi</th>
+
     </tr>
 
     @foreach($orders as $order)
 
-    <tr>
+        <tr>
 
-        <td>
-            {{ $order->code }}
-        </td>
+            <td>
+                {{ $order->code }}
+            </td>
 
-        <td>
-            {{ $order->user->name }}
-        </td>
+            <td>
+                {{ $order->user->name }}
+            </td>
 
-        <td>
-            {{ $order->product->name }}
-        </td>
+            <td>
+                {{ $order->detail->product->name }}
+            </td>
 
-        <td>
-            {{ $order->status }}
-        </td>
+            <td>
+                {{ strtoupper($order->status) }}
+            </td>
 
-        <td>
-            @if($order->total_price)
-                Rp {{ number_format($order->total_price) }}
-            @else
-                -
-            @endif
-        </td>
+            <td>
+                Rp {{ number_format($order->estimated_price) }}
+            </td>
 
-        <td>
+            <td>
+                Rp {{ number_format($order->final_price) }}
+            </td>
 
-            <a href="/admin/orders/{{ $order->id }}">
-                Detail
-            </a>
+            <td>
 
-        </td>
+                <a href="/admin/orders/{{ $order->id }}">
+                    Detail
+                </a>
 
-    </tr>
+            </td>
+
+        </tr>
 
     @endforeach
 

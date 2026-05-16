@@ -25,35 +25,25 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Material::create([
-            'name' => 'Aluminium Standar',
-            'price' => 120000,
-            'unit' => 'meter',
-        ]);
-
-        Material::create([
             'name' => 'Aluminium Premium',
-            'price' => 180000,
+            'price' => 95000,
             'unit' => 'meter',
         ]);
 
         Accessory::create([
-            'name' => 'Kunci',
-            'price' => 50000,
-        ]);
-
-        Accessory::create([
-            'name' => 'Lampu LED',
+            'name' => 'Handle Premium',
             'price' => 75000,
         ]);
 
         Accessory::create([
-            'name' => 'Kaca',
-            'price' => 100000,
+            'name' => 'Soft Closing ',
+            'price' => 150000,
         ]);
 
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
+            OrderStatusSeeder::class,
         ]);
     }
 }
