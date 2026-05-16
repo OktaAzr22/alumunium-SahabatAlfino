@@ -126,6 +126,14 @@ Route::middleware(['auth', 'role:admin'])
     );
     });
 
+    Route::post(
+    '/admin/payments/{payment}/approve',
+    [OrderAdminController::class, 'approvePayment']
+)->middleware([
+    'auth',
+    'role:admin'
+]);
+
 
 // ======================
 // SUPER ADMIN

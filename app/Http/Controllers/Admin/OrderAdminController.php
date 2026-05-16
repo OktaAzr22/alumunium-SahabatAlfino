@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Order;
 use App\Models\OrderStatus;
+use App\Models\Payment;
 
 class OrderAdminController extends Controller
 {
@@ -230,6 +231,54 @@ class OrderAdminController extends Controller
             $data['finished_at'] = now();
         }
 
+        // =========================
+// CEK STATUS SELESAI
+// =========================
+$statusSelesai = OrderStatus::where(
+    'slug',
+    'selesai'
+)->first();
+
+$statusMenungguPelunasan = OrderStatus::where(
+    'slug',
+    'menunggu_pelunasan'
+)->first();
+
+// pembayaran terakhir
+$lastPayment = $order
+    ->payments()
+    ->latest()
+    ->first();
+
+if (
+    $statusSelesai &&
+    $request->status_id == $statusSelesai->id
+) {
+
+    // =========================
+    // JIKA PAYMENT DP
+    // =========================
+    if (
+        $lastPayment &&
+        $lastPayment->payment_type == 'dp'
+    ) {
+
+        // ubah jadi menunggu pelunasan
+        if ($statusMenungguPelunasan) {
+
+            $data['status_id'] =
+                $statusMenungguPelunasan->id;
+        }
+
+    } else {
+
+        // =========================
+        // LANGSUNG SELESAI
+        // =========================
+        $data['finished_at'] = now();
+    }
+}
+
         $order->update($data);
 
         return back()->with(
@@ -237,4 +286,65 @@ class OrderAdminController extends Controller
             'Pesanan berhasil diupdate'
         );
     }
+
+    public function approvePayment(
+    Payment $payment
+) {
+
+    $order = $payment->order;
+
+    $payment->update([
+        'status' => 'approved'
+    ]);
+
+    // =========================
+    // STATUS
+    // =========================
+    $statusDiproses = OrderStatus::where(
+        'slug',
+        'diproses'
+    )->first();
+
+    $statusSelesai = OrderStatus::where(
+        'slug',
+        'selesai'
+    )->first();
+
+    // =========================
+    // JIKA PELUNASAN
+    // =========================
+    if (
+        $payment->payment_type == 'lunas'
+    ) {
+
+        if ($statusSelesai) {
+
+            $order->update([
+
+                'status_id'
+                    => $statusSelesai->id,
+
+                'finished_at'
+                    => now(),
+            ]);
+        }
+
+    } else {
+
+        // =========================
+        // JIKA DP
+        // =========================
+        if ($statusDiproses) {
+
+            $order->update([
+                'status_id' => $statusDiproses->id
+            ]);
+        }
+    }
+
+    return back()->with(
+        'success',
+        'Pembayaran berhasil dikonfirmasi'
+    );
+}
 }
