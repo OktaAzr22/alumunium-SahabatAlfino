@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AluCraft | Custom Furniture Aluminium Premium</title>
+    <!-- Tailwind CSS + Font Awesome + Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #F8FAFC; }
+        .transition-smooth { transition: all 0.25s ease; }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 30px -12px rgba(0,0,0,0.12); }
+        .alum-bg { background: linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 100%); }
+        .glass-nav { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); }
+        .modal-transition { transition: opacity 0.2s, visibility 0.2s; }
+        .table-wrapper { overflow-x: auto; border-radius: 1rem; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="glass-nav sticky top-0 z-50 border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <div class="flex items-center gap-3">
+                    <i class="fab fa-alipay text-3xl text-slate-600 rotate-90"></i>
+                    <span class="font-extrabold text-2xl tracking-tight text-slate-800">Alu<span class="text-sky-600">Craft</span></span>
+                    <span class="hidden md:inline-block text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">Aluminium Custom</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-7 text-slate-600 font-medium">
+                    <a href="#" class="hover:text-sky-600 transition">Beranda</a>
+                    <a href="#produk-user" class="hover:text-sky-600 transition">Produk User</a>
+                    <a href="#form-custom" class="hover:text-sky-600 transition">Custom Order</a>
+                    <a href="#tentang" class="hover:text-sky-600 transition">Tentang</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openModal('userLoginModal')" class="px-4 py-2 rounded-full text-sm font-semibold border border-sky-200 bg-white text-sky-700 hover:bg-sky-50 transition flex items-center gap-2 shadow-sm"><i class="fas fa-user-circle"></i> User</button>
+                    <button onclick="openModal('adminLoginModal')" class="px-4 py-2 rounded-full text-sm font-semibold bg-slate-800 text-white hover:bg-slate-900 transition shadow-md flex items-center gap-2"><i class="fas fa-laptop-code"></i> Admin</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== HERO SECTION ========== -->
+    <section class="alum-bg relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 md:py-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-flex gap-2 bg-sky-100 text-sky-800 rounded-full px-4 py-1.5 text-sm font-medium mb-5"><i class="fas fa-industry"></i> Anti karat & tahan lama</div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-slate-800">Furnitur <span class="text-sky-600">Aluminium</span> Custom Modern</h1>
+                    <p class="text-slate-500 text-lg mt-6 max-w-lg">Ringan, minimalis, bebas karat. Desain rakitan presisi untuk rumah, kantor, dan outdoor. 100% customizable.</p>
+                    <div class="flex flex-wrap gap-4 mt-8">
+                        <button onclick="openModal('userRegisterModal')" class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition flex items-center gap-2"><i class="fas fa-crown"></i> Daftar User</button>
+                        <button onclick="document.getElementById('form-custom').scrollIntoView({behavior:'smooth'})" class="border-2 border-slate-300 hover:border-sky-500 text-slate-700 px-6 py-3 rounded-xl font-semibold transition flex items-center gap-2"><i class="fas fa-ruler-combined"></i> Custom Sekarang</button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.pexels.com/photos/9310077/pexels-photo-9310077.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Aluminium furniture" class="rounded-2xl shadow-2xl object-cover w-full h-80 md:h-96 border-8 border-white">
+                    <div class="absolute -bottom-4 -left-4 bg-white/90 backdrop-blur p-3 rounded-xl shadow-lg hidden md:flex items-center gap-2"><i class="fas fa-check-double text-sky-600"></i><span class="font-semibold">Garansi 5 tahun</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== HALAMAN PRODUK UNTUK USER (katalog lengkap) ========== -->
+    <section id="produk-user" class="py-16 md:py-24 px-5 max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <p class="text-sky-600 font-bold tracking-wide uppercase text-sm">Koleksi Premium</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 mt-2">Produk Aluminium Pilihan</h2>
+            <p class="text-slate-500 max-w-2xl mx-auto mt-3">Desain modern, finishing powder coating, tahan cuaca & ringan.</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-7">
+            <!-- Produk card 1 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-md card-hover transition-smooth border border-slate-100">
+                <div class="h-52 bg-slate-100 flex items-center justify-center"><i class="fas fa-couch text-6xl text-slate-400"></i></div>
+                <div class="p-4"><h3 class="font-bold text-xl">Sofa Minimalis Alum</h3><p class="text-slate-500 text-sm">Rangka aluminium + busa tinggi</p><div class="mt-3 flex justify-between items-center"><span class="text-sky-700 font-bold">Rp 3.2jt</span><button class="text-sky-600 text-sm font-semibold">Detail <i class="fas fa-arrow-right"></i></button></div></div>
+            </div>
+            <div class="bg-white rounded-2xl overflow-hidden shadow-md card-hover transition-smooth border border-slate-100">
+                <div class="h-52 bg-slate-100 flex items-center justify-center"><i class="fas fa-archive text-6xl text-slate-400"></i></div>
+                <div class="p-4"><h3 class="font-bold text-xl">Rak Dinding Aluminium</h3><p class="text-slate-500 text-sm">Modular, tahan beban 20kg</p><div class="mt-3 flex justify-between items-center"><span class="text-sky-700 font-bold">Rp 890rb</span><button class="text-sky-600 text-sm font-semibold">Pesan Custom</button></div></div>
+            </div>
+            <div class="bg-white rounded-2xl overflow-hidden shadow-md card-hover transition-smooth border border-slate-100">
+                <div class="h-52 bg-slate-100 flex items-center justify-center"><i class="fas fa-desk text-6xl text-slate-400"></i></div>
+                <div class="p-4"><h3 class="font-bold text-xl">Meja Kerja Aluminium</h3><p class="text-slate-500 text-sm">Adjustable height, elektrostatik</p><div class="mt-3 flex justify-between items-center"><span class="text-sky-700 font-bold">Rp 2.1jt</span><button class="text-sky-600 text-sm font-semibold">Custom Ukuran</button></div></div>
+            </div>
+            <div class="bg-white rounded-2xl overflow-hidden shadow-md card-hover transition-smooth border border-slate-100">
+                <div class="h-52 bg-slate-100 flex items-center justify-center"><i class="fas fa-umbrella text-6xl text-slate-400"></i></div>
+                <div class="p-4"><h3 class="font-bold text-xl">Kursi Teras Outdoor</h3><p class="text-slate-500 text-sm">Anti UV, tidak panas</p><div class="mt-3 flex justify-between items-center"><span class="text-sky-700 font-bold">Rp 1.7jt</span><button class="text-sky-600 text-sm font-semibold">Pilih Warna</button></div></div>
+            </div>
+        </div>
+        <div class="text-center mt-12"><button class="border border-sky-300 text-sky-700 bg-white px-7 py-2.5 rounded-full font-medium hover:bg-sky-50 transition">Lihat Semua Koleksi <i class="fas fa-chevron-right ml-1 text-xs"></i></button></div>
+    </section>
+
+    <!-- ========== FORM CUSTOM (Halaman Form lengkap) ========== -->
+    <section id="form-custom" class="bg-white py-16 md:py-20 border-y border-slate-200">
+        <div class="max-w-5xl mx-auto px-5">
+            <div class="text-center mb-10">
+                <i class="fas fa-pencil-ruler text-4xl text-sky-600"></i>
+                <h2 class="text-3xl font-bold text-slate-800 mt-3">Form Custom Furniture Aluminium</h2>
+                <p class="text-slate-500">Isi detail pesanan Anda, tim desain akan menghubungi maksimal 24 jam</p>
+            </div>
+            <div class="bg-slate-50 rounded-2xl p-6 md:p-8 shadow-lg border border-slate-200">
+                <form class="grid md:grid-cols-2 gap-6">
+                    <div><label class="block text-slate-700 font-semibold mb-1">Nama Lengkap</label><input type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-sky-400 outline-none" placeholder="John Doe"></div>
+                    <div><label class="block text-slate-700 font-semibold mb-1">Email / WhatsApp</label><input type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3" placeholder="08123456789"></div>
+                    <div class="md:col-span-2"><label class="block text-slate-700 font-semibold mb-1">Jenis Furnitur</label><input type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3" placeholder="Meja makan, lemari pakaian, kitchen set, rak tv, partisi"></div>
+                    <div><label class="block text-slate-700 font-semibold mb-1">Dimensi (P x L x T) cm</label><input type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3" placeholder="Contoh: 150x70x75"></div>
+                    <div><label class="block text-slate-700 font-semibold mb-1">Warna / Finishing</label><select class="w-full border border-slate-300 rounded-xl px-4 py-3 bg-white"><option>Putih powder coating</option><option>Hitam doff</option><option>Silver anodized</option><option>Kayu imitation wood grain</option><option>Custom warna lain</option></select></div>
+                    <div class="md:col-span-2"><label class="block text-slate-700 font-semibold mb-1">Catatan tambahan (desain khusus, aksesoris, model)</label><textarea rows="3" class="w-full border border-slate-300 rounded-xl px-4 py-3" placeholder="Contoh: desain minimalis, handle tersembunyi, rak tambahan"></textarea></div>
+                    <div class="md:col-span-2 flex justify-end"><button type="button" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-9 py-3 rounded-xl shadow transition flex items-center gap-2"><i class="fas fa-paper-plane"></i> Kirim Permintaan Custom</button></div>
+                </form>
+                <p class="text-xs text-center text-slate-400 mt-6">*Form demonstrasi, untuk simulasi setelah login user akan tersimpan.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TABEL HALAMAN ADMIN (Table Data Pesanan & User) ========== -->
+    <section id="admin-table-demo" class="py-16 max-w-7xl mx-auto px-5">
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5 md:p-7">
+            <div class="flex justify-between items-center flex-wrap gap-3 border-b pb-4 mb-5">
+                <h3 class="text-2xl font-bold text-slate-800"><i class="fas fa-table-list text-sky-600 mr-2"></i>Panel Admin - Data Pesanan Custom</h3>
+                <span class="text-xs bg-slate-100 px-3 py-1 rounded-full">Demo preview</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="min-w-full bg-white rounded-xl border border-slate-200">
+                    <thead class="bg-slate-100 text-slate-700">
+                        <tr><th class="px-5 py-3 text-left text-sm font-semibold">ID</th><th class="px-5 py-3 text-left">Nama Customer</th><th class="px-5 py-3 text-left">Jenis Furnitur</th><th class="px-5 py-3 text-left">Dimensi</th><th class="px-5 py-3 text-left">Status</th><th class="px-5 py-3 text-center">Aksi</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr class="hover:bg-slate-50"><td class="px-5 py-3">#AL-001</td><td class="px-5 py-3 font-medium">Budi Santoso</td><td>Lemari Pakaian Aluminium</td><td>200x100x60</td><td><span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full">Diproses</span></td><td class="px-5 py-3 text-center"><i class="fas fa-edit text-sky-500 cursor-pointer"></i> <i class="fas fa-trash-alt text-red-400 ml-2 cursor-pointer"></i></td></tr>
+                        <tr class="hover:bg-slate-50"><td class="px-5 py-3">#AL-002</td><td class="px-5 py-3">Siti Aisyah</td><td>Kitchen set minimalis</td><td>240x60x85</td><td><span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Selesai</span></td><td class="px-5 py-3 text-center"><i class="fas fa-edit text-sky-500"></i> <i class="fas fa-trash-alt text-red-400 ml-2"></i></td></tr>
+                        <tr class="hover:bg-slate-50"><td class="px-5 py-3">#AL-003</td><td class="px-5 py-3">Rizky Hermawan</td><td>Meja kerja + rak</td><td>160x75x74</td><td><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">Konsultasi</span></td><td class="px-5 py-3 text-center"><i class="fas fa-edit text-sky-500"></i> <i class="fas fa-trash-alt text-red-400 ml-2"></i></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-8 border-t pt-5">
+                <h4 class="font-bold text-lg mb-3"><i class="fas fa-users text-sky-600 mr-2"></i>Daftar User Terdaftar (Demo)</h4>
+                <div class="table-wrapper">
+                    <table class="min-w-full bg-white border rounded-xl">
+                        <thead class="bg-slate-50"><tr><th class="px-4 py-2 text-left">User ID</th><th class="px-4 py-2 text-left">Nama</th><th class="px-4 py-2 text-left">Email</th><th class="px-4 py-2 text-left">Role</th><th class="px-4 py-2">Status</th></tr></thead>
+                        <tbody><tr><td class="px-4 py-2">USR01</td><td>Andi Wijaya</td><td>andi@email.com</td><td>User</td><td class="text-green-600"><i class="fas fa-check-circle"></i> aktif</td></tr>
+                        <tr><td class="px-4 py-2">USR02</td><td>Dewi Sartika</td><td>dewi@craft.com</td><td>User</td><td class="text-green-600"><i class="fas fa-check-circle"></i> aktif</td></tr>
+                        <tr><td class="px-4 py-2">ADM01</td><td>Super Admin</td><td>admin@alucraft.com</td><td>Admin</td><td class="text-blue-600"><i class="fas fa-shield-alt"></i> super</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="mt-6 text-right text-xs text-slate-400">*Tabel statis untuk tampilan frontend admin, aksi edit/hapus hanya simulasi.</div>
+        </div>
+    </section>
+
+    <!-- ========== TENTANG KAMI ========== -->
+    <section id="tentang" class="max-w-7xl mx-auto px-5 py-16 md:py-20 bg-slate-50 rounded-3xl my-8">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div><img src="https://images.pexels.com/photos/7990459/pexels-photo-7990459.jpeg?auto=compress&cs=tinysrgb&w=500" class="rounded-2xl shadow-lg" alt="Aluminium craft"></div>
+            <div><h2 class="text-3xl font-bold text-slate-800">Kenapa <span class="text-sky-600">Aluminium?</span> Modern & Kokoh</h2><p class="text-slate-500 mt-4 leading-relaxed">AluCraft menggunakan aluminium berkualitas aerospace-grade, finishing powder coating anti gores. Cocok untuk area lembab maupun outdoor. Proses custom cepat dan ramah lingkungan karena alumunium 100% dapat didaur ulang.</p><div class="grid grid-cols-2 gap-4 mt-8"><div><i class="fas fa-tachometer-alt text-sky-600 text-xl"></i><p class="font-semibold">Ringan & Kuat</p></div><div><i class="fas fa-water text-sky-600 text-xl"></i><p class="font-semibold">Anti karat</p></div><div><i class="fas fa-palette text-sky-600 text-xl"></i><p class="font-semibold">20+ pilihan warna</p></div><div><i class="fas fa-tools text-sky-600 text-xl"></i><p class="font-semibold">Garansi 5 tahun</p></div></div></div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 text-slate-300 py-10"><div class="max-w-7xl mx-auto px-5 text-center"><p class="text-sm">© 2025 AluCraft — Premium Aluminium Custom Furniture. Inovasi tanpa karat.</p><div class="flex justify-center gap-6 mt-4 text-slate-400"><i class="fab fa-instagram hover:text-white"></i><i class="fab fa-whatsapp hover:text-white"></i><i class="fab fa-tiktok hover:text-white"></i></div></div></footer>
+
+    <!-- ========== MODAL USER LOGIN & REGISTER ========== -->
+    <div id="userLoginModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-transition" onclick="if(event.target===this) closeModal('userLoginModal')">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-6 shadow-2xl"><div class="flex justify-between"><h3 class="text-2xl font-bold"><i class="fas fa-user-astronaut text-sky-600"></i> Login User</h3><button onclick="closeModal('userLoginModal')"><i class="fas fa-times text-slate-400"></i></button></div>
+        <form onsubmit="event.preventDefault(); alert('Selamat datang User! Simulasi login berhasil.'); closeModal('userLoginModal');" class="mt-5 space-y-4"><input type="email" placeholder="Email user" class="w-full border rounded-xl p-3" value="user@alucraft.com"><input type="password" placeholder="Password" class="w-full border rounded-xl p-3" value="user123"><button class="w-full bg-sky-600 text-white py-3 rounded-xl font-bold">Masuk sebagai User</button><p class="text-center">Belum daftar? <button type="button" onclick="switchModal('userLoginModal','userRegisterModal')" class="text-sky-600">Register</button></p></form></div>
+    </div>
+    <div id="userRegisterModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-transition" onclick="if(event.target===this) closeModal('userRegisterModal')">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-6"><div class="flex justify-between"><h3 class="text-2xl font-bold"><i class="fas fa-user-plus text-sky-600"></i> Daftar User</h3><button onclick="closeModal('userRegisterModal')"><i class="fas fa-times"></i></button></div>
+        <form onsubmit="event.preventDefault(); alert('Registrasi user berhasil (demo). Silakan login.'); closeModal('userRegisterModal');" class="mt-5 space-y-4"><input type="text" placeholder="Nama lengkap" class="w-full border p-3 rounded-xl"><input type="email" placeholder="Email" class="w-full border p-3 rounded-xl"><input type="password" placeholder="Password" class="w-full border p-3 rounded-xl"><button class="w-full bg-sky-600 text-white py-3 rounded-xl font-bold">Daftar Sekarang</button><p class="text-center">Sudah punya akun? <button type="button" onclick="switchModal('userRegisterModal','userLoginModal')" class="text-sky-600">Login</button></p></form></div>
+    </div>
+
+    <!-- ========== MODAL ADMIN LOGIN & REGISTER ========== -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-transition" onclick="if(event.target===this) closeModal('adminLoginModal')">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-6 border-t-4 border-slate-700"><div class="flex justify-between"><h3 class="text-2xl font-bold"><i class="fas fa-user-shield text-slate-700"></i> Login Admin</h3><button onclick="closeModal('adminLoginModal')"><i class="fas fa-times"></i></button></div>
+        <form onsubmit="event.preventDefault(); alert('Dashboard Admin: kelola produk, pesanan, dan user (simulasi)'); closeModal('adminLoginModal');" class="mt-5 space-y-4"><input type="text" placeholder="Username admin" class="w-full border rounded-xl p-3" value="admin_alucraft"><input type="password" placeholder="Password" class="w-full border rounded-xl p-3" value="admin123"><button class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold">Login sebagai Admin</button><p class="text-center">Belum punya akses? <button type="button" onclick="switchModal('adminLoginModal','adminRegisterModal')" class="text-slate-700 font-medium">Registrasi Admin</button></p></form></div>
+    </div>
+    <div id="adminRegisterModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-transition" onclick="if(event.target===this) closeModal('adminRegisterModal')">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-6"><div class="flex justify-between"><h3 class="text-2xl font-bold"><i class="fas fa-id-card"></i> Daftar Admin Baru</h3><button onclick="closeModal('adminRegisterModal')"><i class="fas fa-times"></i></button></div>
+        <form onsubmit="event.preventDefault(); alert('Pendaftaran admin hanya demo, hubungi super admin.'); closeModal('adminRegisterModal');" class="mt-5 space-y-4"><input placeholder="Nama lengkap admin" class="w-full border p-3 rounded-xl"><input placeholder="Email perusahaan" class="w-full border p-3 rounded-xl"><input placeholder="Kode akses" class="w-full border p-3 rounded-xl"><input type="password" placeholder="Buat password" class="w-full border p-3 rounded-xl"><button class="w-full bg-slate-800 text-white py-3 rounded-xl">Register Admin</button><p class="text-center text-sm">Sudah punya akun? <button type="button" onclick="switchModal('adminRegisterModal','adminLoginModal')" class="text-sky-600">Login</button></p></form></div>
+    </div>
+
+    <script>
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        function switchModal(current, target) { closeModal(current); openModal(target); }
+        window.onclick = function(e) { if(e.target.classList && e.target.classList.contains('modal-transition')) closeModal(e.target.id); }
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function(e) { const target = document.querySelector(this.getAttribute('href')); if(target) { e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); } }); });
+    </script>
+</body>
+</html>
