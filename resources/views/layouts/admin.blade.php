@@ -30,7 +30,6 @@
         .rotate-transition {
             transition: transform 0.2s ease;
         }
-        /* Sidebar inner scroll: hanya bagian nav yang scroll */
         .sidebar-scrollable {
             flex: 1;
             overflow-y: auto;
@@ -51,20 +50,71 @@
 
     
     <script>
-        document.querySelectorAll('.submenu-toggle').forEach(button => {
-            button.addEventListener('click', () => {
-                const submenuContent = button.nextElementSibling;
-                const icon = button.querySelector('.fa-chevron-down');
-                if (submenuContent.classList.contains('hidden')) {
-                    submenuContent.classList.remove('hidden');
-                    if (icon) icon.style.transform = 'rotate(180deg)';
-                } else {
-                    submenuContent.classList.add('hidden');
-                    if (icon) icon.style.transform = 'rotate(0deg)';
+
+    document.querySelectorAll('.submenu-toggle').forEach(button => {
+
+        button.addEventListener('click', () => {
+
+            const submenuContent =
+                button.nextElementSibling;
+
+            const arrowIcon =
+                button.querySelector('.fa-chevron-down');
+
+            const mainIcon =
+                button.querySelector('.menu-icon');
+
+            if (submenuContent.classList.contains('hidden')) {
+
+                submenuContent.classList.remove('hidden');
+
+                button.classList.add('bg-indigo-50');
+
+                if (mainIcon) {
+
+                    mainIcon.classList.remove('text-gray-500');
+                    mainIcon.classList.add('text-gray-900');
+
                 }
-            });
+
+                if (arrowIcon) {
+
+                    arrowIcon.classList.add('rotate-180');
+                    arrowIcon.classList.remove('text-gray-400');
+                    arrowIcon.classList.add('text-gray-900');
+
+                }
+
+            }
+
+            else {
+
+                submenuContent.classList.add('hidden');
+
+                button.classList.remove('bg-indigo-50');
+
+                if (mainIcon) {
+
+                    mainIcon.classList.remove('text-gray-900');
+                    mainIcon.classList.add('text-gray-500');
+
+                }
+
+                if (arrowIcon) {
+
+                    arrowIcon.classList.remove('rotate-180');
+                    arrowIcon.classList.remove('text-gray-900');
+                    arrowIcon.classList.add('text-gray-400');
+
+                }
+
+            }
+
         });
-    </script>
+
+    });
+
+</script>
     @stack('scripts')
 
 </body>
