@@ -39,24 +39,47 @@
                     Produk
                 </a>
 
-                <a
-                    href="#form-custom"
-                    class="hover:text-sky-600 transition"
-                >
-                    Custom Order
-                </a>
+                {{-- BELUM LOGIN --}}
+                @guest
 
-                <a
-                    href="#tentang"
-                    class="hover:text-sky-600 transition"
-                >
-                    Tentang
-                </a>
+                    <a
+                        href="#tentang"
+                        class="hover:text-sky-600 transition"
+                    >
+                        Tentang
+                    </a>
+
+                @endguest
+
+                {{-- SUDAH LOGIN --}}
+                @auth
+
+                    <a
+                        href="{{ url('/my-orders') }}"
+                        class="hover:text-sky-600 transition"
+                    >
+                        Pesanan Saya
+                    </a>
+
+                @endauth
 
             </div>
 
-            {{-- AUTH --}}
+            {{-- RIGHT SIDE --}}
             <div class="flex items-center gap-3">
+
+                {{-- SEARCH --}}
+                <div class="hidden md:flex items-center bg-white border border-slate-200 rounded-full px-4 py-2 shadow-sm">
+
+                    <i class="fas fa-search text-slate-400 text-sm mr-2"></i>
+
+                    <input
+                        type="text"
+                        placeholder="Punya Resi...?"
+                        class="outline-none text-sm bg-transparent w-40"
+                    >
+
+                </div>
 
                 {{-- BELUM LOGIN --}}
                 @guest
@@ -70,81 +93,35 @@
                         Login
                     </button>
 
-                    <button
-                        type="button"
-                        onclick="openModal('userRegisterModal')"
-                        class="px-4 py-2 rounded-full text-sm font-semibold bg-sky-600 text-white hover:bg-sky-700 transition shadow-md flex items-center gap-2"
-                    >
-                        <i class="fas fa-user-plus"></i>
-                        Register
-                    </button>
-
                 @endguest
 
                 {{-- SUDAH LOGIN --}}
                 @auth
 
-                    <div class="flex items-center gap-3">
+                    {{-- RIWAYAT --}}
+                    <a
+                        href="{{ url('/my-orders') }}"
+                        class="px-4 py-2 rounded-full text-sm font-semibold border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition flex items-center gap-2"
+                    >
+                        <i class="fas fa-clock-rotate-left"></i>
+                        Riwayat
+                    </a>
 
-                        <div class="hidden md:flex flex-col text-right">
+                    {{-- LOGOUT --}}
+                    <form
+                        action="{{ url('/logout') }}"
+                        method="POST"
+                    >
+                        @csrf
 
-                            <span class="text-xs text-slate-400">
-                                Selamat datang
-                            </span>
-
-                            <span class="font-semibold text-slate-700">
-                                {{ auth()->user()->name }}
-                            </span>
-
-                        </div>
-
-                        {{-- DASHBOARD --}}
-                        @if(auth()->user()->role === 'admin')
-
-                            <a
-                                href="{{ url('/admin') }}"
-                                class="px-4 py-2 rounded-full text-sm font-semibold bg-slate-800 text-white hover:bg-slate-900 transition"
-                            >
-                                Dashboard
-                            </a>
-
-                        @elseif(auth()->user()->role === 'super_admin')
-
-                            <a
-                                href="{{ url('/super-admin') }}"
-                                class="px-4 py-2 rounded-full text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition"
-                            >
-                                Super Admin
-                            </a>
-
-                        @else
-
-                            <a
-                                href="{{ url('/dashboard') }}"
-                                class="px-4 py-2 rounded-full text-sm font-semibold bg-sky-600 text-white hover:bg-sky-700 transition"
-                            >
-                                Dashboard
-                            </a>
-
-                        @endif
-
-                        {{-- LOGOUT --}}
-                        <form
-                            action="{{ url('/logout') }}"
-                            method="POST"
+                        <button
+                            type="submit"
+                            class="px-4 py-2 rounded-full text-sm font-semibold bg-red-500 text-white hover:bg-red-600 transition"
                         >
-                            @csrf
+                            Logout
+                        </button>
 
-                            <button
-                                type="submit"
-                                class="px-4 py-2 rounded-full text-sm font-semibold bg-red-500 text-white hover:bg-red-600 transition"
-                            >
-                                Logout
-                            </button>
-
-                        </form>
-
-                    </div>
+                    </form>
 
                 @endauth
 
