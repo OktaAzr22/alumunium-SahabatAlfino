@@ -27,12 +27,12 @@
                     @auth
 
                         <a
-                            href="{{ url('/products') }}"
+                            href="{{ url('/dashboard') }}"
                             class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition flex items-center gap-2"
                         >
                             <i class="fas fa-box-open"></i>
 
-                            Lihat Produk
+                            Kembali Dashboard
                         </a>
 
                     @endauth
@@ -157,7 +157,14 @@
         
 
     </div>
-    <div class="text-center mt-12"><button class="border border-sky-300 text-sky-700 bg-white px-7 py-2.5 rounded-full font-medium hover:bg-sky-50 transition">Lihat Semua Koleksi <i class="fas fa-chevron-right ml-1 text-xs"></i></button></div>
+    <div class="text-center mt-12">
+        <a href="{{ url('/product') }}">
+        <button class="border border-sky-300 text-sky-700 bg-white px-7 py-2.5 rounded-full font-medium hover:bg-sky-50 transition">Lihat Semua Koleksi 
+            <i class="fas fa-chevron-right ml-1 text-xs">
+                </i>
+        </button>
+        </a>
+    </div>
 
   </section>
 

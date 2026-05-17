@@ -2,398 +2,558 @@
 
 @section('content')
 
-<h1>Detail Pesanan</h1>
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-<hr>
+    {{-- HEADER --}}
+    <div class="flex flex-col lg:flex-row gap-6">
 
-<h2>
-    {{ $order->code }}
-</h2>
+        {{-- LEFT --}}
+        <div class="lg:w-2/3">
 
-<p>
+            {{-- CARD --}}
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
 
-    Status:
+                {{-- TOP --}}
+                <div class="p-6 border-b border-slate-100 flex items-start justify-between gap-4">
 
-    <strong>
-        {{ $order->status->name ?? '-' }}
-    </strong>
+                    <div>
 
-</p>
+                        <p class="text-sm text-slate-400">
+                            Detail Pesanan
+                        </p>
 
-<p>
+                        <h1 class="text-2xl font-bold text-slate-800 mt-1">
 
-    Tanggal Pesanan:
-    {{ $order->created_at->format('d M Y') }}
+                            {{ $order->code }}
 
-</p>
+                        </h1>
 
-<hr>
+                        <p class="text-sm text-slate-500 mt-2">
 
-<h3>Produk</h3>
+                            {{ $order->created_at->format('d M Y H:i') }}
 
-<p>
-    {{ $order->detail->product->name }}
-</p>
+                        </p>
 
-@if($order->detail->product->image)
+                    </div>
 
-    <img
-        src="{{ asset('storage/' . $order->detail->product->image) }}"
-        width="200">
+                    @php
 
-    <br><br>
+                        $statusColor = match(strtolower($order->status->name)) {
 
-@endif
+                            'pending' => 'bg-amber-100 text-amber-600',
 
-<hr>
+                            'diproses' => 'bg-sky-100 text-sky-600',
 
-<h3>Ukuran Custom</h3>
+                            'selesai' => 'bg-emerald-100 text-emerald-600',
 
-<p>
+                            default => 'bg-slate-100 text-slate-600'
 
-    {{ $order->detail->length }}
-    x
-    {{ $order->detail->width }}
-    x
-    {{ $order->detail->height }}
-    cm
+                        };
 
-</p>
+                    @endphp
 
-<hr>
+                    <span class="px-4 py-2 rounded-full text-xs font-semibold {{ $statusColor }}">
 
-<h3>Material</h3>
+                        {{ strtoupper($order->status->name) }}
 
-<p>
+                    </span>
 
-    {{ $order->detail->material->name }}
+                </div>
 
-</p>
+                {{-- BODY --}}
+                <div class="p-6 space-y-8">
 
-<p>
+                    {{-- PRODUK --}}
+                    <div>
 
-    Kebutuhan Material:
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">
+                            Produk
+                        </h3>
 
-    {{ $order->detail->material_qty }}
+                        <div class="flex flex-col md:flex-row gap-5">
 
-    {{ $order->detail->material->unit }}
+                            @if($order->detail->product->image)
 
-</p>
+                                <img
+                                    src="{{ asset('storage/' . $order->detail->product->image) }}"
+                                    class="w-full md:w-56 h-52 object-cover rounded-2xl border border-slate-200"
+                                >
 
-<hr>
+                            @endif
 
-<h3>Accessories</h3>
+                            <div class="flex-1">
 
-@if($order->detail->accessories->count())
+                                <h4 class="text-xl font-bold text-slate-800">
 
-    <ul>
+                                    {{ $order->detail->product->name }}
 
-        @foreach($order->detail->accessories as $accessory)
+                                </h4>
 
-            <li>
+                                <p class="text-sm text-slate-500 mt-3 leading-relaxed">
 
-                {{ $accessory->name }}
+                                    {{ $order->detail->product->description ?? 'Produk furnitur aluminium custom premium.' }}
 
-                ({{ $accessory->pivot->qty }}x)
+                                </p>
 
-                -
+                            </div>
 
-                Rp
-                {{ number_format($accessory->pivot->subtotal) }}
+                        </div>
 
-            </li>
+                    </div>
 
-        @endforeach
+                    {{-- DETAIL --}}
+                    <div class="grid md:grid-cols-2 gap-5">
 
-    </ul>
+                        {{-- UKURAN --}}
+                        <div class="bg-slate-50 rounded-2xl p-5">
 
-@else
+                            <h4 class="font-bold text-slate-700 mb-4">
+                                Ukuran Custom
+                            </h4>
 
-    <p>
-        Tidak ada accessories
-    </p>
+                            <div class="space-y-2 text-sm text-slate-600">
 
-@endif
+                                <p>
+                                    Panjang:
+                                    <span class="font-semibold">
+                                        {{ $order->detail->length }} cm
+                                    </span>
+                                </p>
 
-<hr>
+                                <p>
+                                    Lebar:
+                                    <span class="font-semibold">
+                                        {{ $order->detail->width }} cm
+                                    </span>
+                                </p>
 
-<h3>Harga</h3>
+                                <p>
+                                    Tinggi:
+                                    <span class="font-semibold">
+                                        {{ $order->detail->height }} cm
+                                    </span>
+                                </p>
 
-<p>
+                            </div>
 
-    Estimasi Harga:
-    Rp {{ number_format($order->estimated_price) }}
+                        </div>
 
-</p>
+                        {{-- MATERIAL --}}
+                        <div class="bg-slate-50 rounded-2xl p-5">
 
-@if($order->final_price)
+                            <h4 class="font-bold text-slate-700 mb-4">
+                                Material
+                            </h4>
 
-    <p>
+                            <div class="space-y-2 text-sm text-slate-600">
 
-        Harga Final:
-        Rp {{ number_format($order->final_price) }}
+                                <p>
 
-    </p>
+                                    Material:
+                                    <span class="font-semibold">
 
-@endif
+                                        {{ $order->detail->material->name }}
 
-@if($order->dp_amount)
+                                    </span>
 
-    <p>
+                                </p>
 
-        DP:
+                                <p>
 
-        {{ $order->dp_percent }}%
+                                    Kebutuhan:
+                                    <span class="font-semibold">
 
-        -
+                                        {{ $order->detail->material_qty }}
+                                        {{ $order->detail->material->unit }}
 
-        Rp {{ number_format($order->dp_amount) }}
+                                    </span>
 
-    </p>
+                                </p>
 
-@endif
+                            </div>
 
-<hr>
+                        </div>
 
-<h3>Catatan Tambahan</h3>
+                    </div>
 
-<p>
-    {{ $order->detail->notes ?? '-' }}
-</p>
+                    {{-- ACCESSORIES --}}
+                    <div>
 
-<hr>
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">
+                            Accessories
+                        </h3>
 
-<h3>Catatan Admin</h3>
+                        @if($order->detail->accessories->count())
 
-<p>
-    {{ $order->admin_notes ?? '-' }}
-</p>
+                            <div class="overflow-x-auto">
 
-@if($order->design_file)
+                                <table class="w-full">
 
-    <hr>
+                                    <thead class="bg-slate-50">
 
-    <h3>File Design</h3>
+                                        <tr>
 
-    <a href="{{ asset('storage/' . $order->design_file) }}"
-       target="_blank">
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
+                                                Nama
+                                            </th>
 
-        Lihat File Design
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
+                                                Qty
+                                            </th>
 
-    </a>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
+                                                Subtotal
+                                            </th>
 
-@endif
+                                        </tr>
 
-{{-- ========================= --}}
-{{-- FORM PEMBAYARAN --}}
-{{-- ========================= --}}
-@if(
-    $order->status &&
-    $order->status->slug != 'pending'
-)
+                                    </thead>
 
-    <hr>
+                                    <tbody class="divide-y divide-slate-100">
 
-    <h3>Pembayaran</h3>
+                                        @foreach($order->detail->accessories as $accessory)
 
-    @if(session('success'))
+                                            <tr>
 
-        <div style="color: green;">
-            {{ session('success') }}
+                                                <td class="px-4 py-4 text-sm text-slate-700">
+                                                    {{ $accessory->name }}
+                                                </td>
+
+                                                <td class="px-4 py-4 text-sm text-slate-700">
+                                                    {{ $accessory->pivot->qty }}x
+                                                </td>
+
+                                                <td class="px-4 py-4 text-sm font-semibold text-slate-800">
+                                                    Rp {{ number_format($accessory->pivot->subtotal,0,',','.') }}
+                                                </td>
+
+                                            </tr>
+
+                                        @endforeach
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        @else
+
+                            <div class="bg-slate-50 rounded-2xl p-5 text-sm text-slate-500">
+
+                                Tidak ada accessories
+
+                            </div>
+
+                        @endif
+
+                    </div>
+
+                    {{-- NOTES --}}
+                    <div class="grid md:grid-cols-2 gap-5">
+
+                        <div class="bg-slate-50 rounded-2xl p-5">
+
+                            <h4 class="font-bold text-slate-700 mb-3">
+                                Catatan Tambahan
+                            </h4>
+
+                            <p class="text-sm text-slate-600 leading-relaxed">
+
+                                {{ $order->detail->notes ?? '-' }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="bg-slate-50 rounded-2xl p-5">
+
+                            <h4 class="font-bold text-slate-700 mb-3">
+                                Catatan Admin
+                            </h4>
+
+                            <p class="text-sm text-slate-600 leading-relaxed">
+
+                                {{ $order->admin_notes ?? '-' }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {{-- DESIGN --}}
+                    @if($order->design_file)
+
+                        <div>
+
+                            <h3 class="text-lg font-bold text-slate-800 mb-4">
+                                Design Custom
+                            </h3>
+
+                            <img
+                                src="{{ asset('storage/' . $order->design_file) }}"
+                                class="w-full max-w-md rounded-2xl border border-slate-200 shadow-sm"
+                            >
+
+                        </div>
+
+                    @endif
+
+                </div>
+
+            </div>
+
         </div>
 
-        <br>
+        {{-- RIGHT --}}
+        <div class="lg:w-1/3 space-y-6">
 
-    @endif
+            {{-- HARGA --}}
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
 
-    <form action="{{ url('/orders/' . $order->id . '/payment') }}"
-          method="POST"
-          enctype="multipart/form-data">
+                <h3 class="text-lg font-bold text-slate-800 mb-5">
+                    Informasi Harga
+                </h3>
 
-        @csrf
+                <div class="space-y-4">
 
-        {{-- TIPE PEMBAYARAN --}}
-        <label>Pilih Pembayaran</label>
+                    <div class="flex items-center justify-between text-sm">
 
-        <br>
+                        <span class="text-slate-500">
+                            Estimasi Harga
+                        </span>
 
-        <select name="payment_type"
-                id="paymentType">
+                        <span class="font-bold text-slate-800">
 
-            <option value="dp">
+                            Rp {{ number_format($order->estimated_price,0,',','.') }}
 
-                DP
+                        </span>
 
-            </option>
+                    </div>
 
-            <option value="lunas">
+                    @if($order->final_price)
 
-                Lunas
+                        <div class="flex items-center justify-between text-sm">
 
-            </option>
+                            <span class="text-slate-500">
+                                Harga Final
+                            </span>
 
-        </select>
+                            <span class="font-bold text-emerald-600">
 
-        <br><br>
+                                Rp {{ number_format($order->final_price,0,',','.') }}
 
-        {{-- INFO DP --}}
-        <div id="dpInfo">
+                            </span>
 
-            <p>
+                        </div>
 
-                DP:
+                    @endif
 
-                {{ $order->dp_percent }}%
+                    @if($order->dp_amount)
 
-            </p>
+                        <div class="flex items-center justify-between text-sm">
 
-            <p>
+                            <span class="text-slate-500">
+                                DP
+                            </span>
 
-                Nominal DP:
+                            <span class="font-bold text-amber-500">
 
-                Rp {{ number_format($order->dp_amount) }}
+                                {{ $order->dp_percent }}%
+                                -
+                                Rp {{ number_format($order->dp_amount,0,',','.') }}
 
-            </p>
+                            </span>
+
+                        </div>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+            {{-- PEMBAYARAN --}}
+            @if(
+                $order->status &&
+                $order->status->slug != 'pending'
+            )
+
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+
+                    <h3 class="text-lg font-bold text-slate-800 mb-5">
+                        Pembayaran
+                    </h3>
+
+                    <form
+                        action="{{ url('/orders/' . $order->id . '/payment') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        class="space-y-5"
+                    >
+
+                        @csrf
+
+                        <div>
+
+                            <label class="text-sm font-semibold text-slate-600">
+                                Jenis Pembayaran
+                            </label>
+
+                            <select
+                                name="payment_type"
+                                id="paymentType"
+                                class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+                            >
+
+                                <option value="dp">
+                                    DP
+                                </option>
+
+                                <option value="lunas">
+                                    Lunas
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        {{-- BANK --}}
+                        <div class="bg-slate-50 rounded-2xl p-4">
+
+                            <p class="text-sm font-semibold text-slate-700">
+                                Transfer Ke
+                            </p>
+
+                            <div class="mt-3 text-sm text-slate-600 leading-7">
+
+                                BANK BCA
+                                <br>
+
+                                1234567890
+                                <br>
+
+                                Sahabat Alfino
+
+                            </div>
+
+                        </div>
+
+                        {{-- FILE --}}
+                        <div>
+
+                            <label class="text-sm font-semibold text-slate-600">
+                                Bukti Pembayaran
+                            </label>
+
+                            <input
+                                type="file"
+                                name="payment_proof"
+                                required
+                                class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+                            >
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition"
+                        >
+                            Kirim Pembayaran
+                        </button>
+
+                    </form>
+
+                </div>
+
+            @endif
+
+            {{-- RIWAYAT --}}
+            @if($order->payments->count())
+
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+
+                    <div class="p-5 border-b border-slate-100">
+
+                        <h3 class="text-lg font-bold text-slate-800">
+                            Riwayat Pembayaran
+                        </h3>
+
+                    </div>
+
+                    <div class="overflow-x-auto">
+
+                        <table class="w-full">
+
+                            <thead class="bg-slate-50">
+
+                                <tr>
+
+                                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
+                                        Tipe
+                                    </th>
+
+                                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
+                                        Nominal
+                                    </th>
+
+                                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody class="divide-y divide-slate-100">
+
+                                @foreach($order->payments as $payment)
+
+                                    <tr>
+
+                                        <td class="px-4 py-4 text-sm text-slate-700">
+
+                                            {{ strtoupper($payment->payment_type) }}
+
+                                        </td>
+
+                                        <td class="px-4 py-4 text-sm font-semibold text-slate-800">
+
+                                            Rp {{ number_format($payment->amount,0,',','.') }}
+
+                                        </td>
+
+                                        <td class="px-4 py-4">
+
+                                            <a
+                                                href="{{ asset('storage/' . $payment->payment_proof) }}"
+                                                target="_blank"
+                                                class="px-3 py-1.5 rounded-full bg-sky-100 text-sky-600 text-xs font-semibold"
+                                            >
+                                                Lihat Bukti
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforeach
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            @endif
 
         </div>
 
-        {{-- INFO LUNAS --}}
-        <div id="lunasInfo"
-             style="display:none;">
+    </div>
 
-            <p>
-
-                Total Pelunasan:
-
-                Rp {{ number_format($order->final_price) }}
-
-            </p>
-
-        </div>
-
-        <hr>
-
-        <h4>Transfer Ke</h4>
-
-        <p>
-
-            BANK BCA
-            <br>
-
-            1234567890
-            <br>
-
-            Sahabat Alfino
-
-        </p>
-
-        <hr>
-
-        {{-- BUKTI --}}
-        <label>Bukti Pembayaran</label>
-
-        <br>
-
-        <input type="file"
-               name="payment_proof"
-               required>
-
-        <br><br>
-
-        <button type="submit">
-
-            Kirim Pembayaran
-
-        </button>
-
-    </form>
-
-    <script>
-
-        const paymentType =
-            document.getElementById('paymentType');
-
-        const dpInfo =
-            document.getElementById('dpInfo');
-
-        const lunasInfo =
-            document.getElementById('lunasInfo');
-
-        paymentType.addEventListener(
-            'change',
-            function () {
-
-                if (this.value === 'dp') {
-
-                    dpInfo.style.display = 'block';
-                    lunasInfo.style.display = 'none';
-
-                } else {
-
-                    dpInfo.style.display = 'none';
-                    lunasInfo.style.display = 'block';
-                }
-            }
-        );
-
-    </script>
-
-@endif
-
-{{-- ========================= --}}
-{{-- RIWAYAT PEMBAYARAN --}}
-{{-- ========================= --}}
-@if($order->payments->count())
-
-    <hr>
-
-    <h3>Riwayat Pembayaran</h3>
-
-    <table border="1"
-           cellpadding="10">
-
-        <tr>
-
-            <th>Tipe</th>
-            <th>Nominal</th>
-            <th>Status</th>
-            <th>Bukti</th>
-
-        </tr>
-
-        @foreach($order->payments as $payment)
-
-            <tr>
-
-                <td>
-                    {{ strtoupper($payment->payment_type) }}
-                </td>
-
-                <td>
-                    Rp {{ number_format($payment->amount) }}
-                </td>
-
-                <td>
-                    {{ strtoupper($payment->status) }}
-                </td>
-
-                <td>
-
-                    <a href="{{ asset('storage/' . $payment->payment_proof) }}"
-                       target="_blank">
-
-                        Lihat Bukti
-
-                    </a>
-
-                </td>
-
-            </tr>
-
-        @endforeach
-
-    </table>
-
-@endif
+</section>
 
 @endsection

@@ -1,0 +1,140 @@
+<!-- Table Pesanan -->
+    <div class="mt-10 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+
+        <!-- Header -->
+        <div class="p-6 border-b border-slate-200 flex items-center justify-between">
+
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800">
+                    Pesanan Saya
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Daftar pesanan furnitur aluminium terbaru Anda
+                </p>
+            </div>
+
+            <button class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-semibold transition">
+                <i class="fas fa-plus mr-2"></i>
+                Pesan Baru
+            </button>
+
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+
+            <table class="w-full">
+
+                <thead class="bg-slate-50">
+
+                    <tr class="text-left text-sm text-slate-600">
+
+                        <th class="px-6 py-4 font-semibold">No Pesanan</th>
+                        <th class="px-6 py-4 font-semibold">Produk</th>
+                        <th class="px-6 py-4 font-semibold">Tanggal</th>
+                        <th class="px-6 py-4 font-semibold">Total</th>
+                        <th class="px-6 py-4 font-semibold">Status</th>
+                        <th class="px-6 py-4 font-semibold text-center">Aksi</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="divide-y divide-slate-100">
+
+                    <tr class="hover:bg-slate-50 transition">
+
+                        <td class="px-6 py-5 font-semibold text-slate-700">
+                            INV-2026-001
+                        </td>
+
+                        <td class="px-6 py-5">
+                            Kitchen Set Aluminium
+                        </td>
+
+                        <td class="px-6 py-5 text-slate-500">
+                            17 Mei 2026
+                        </td>
+
+                        <td class="px-6 py-5 font-semibold text-slate-700">
+                            Rp 5.500.000
+                        </td>
+
+                        <td class="px-6 py-5">
+
+                            <span class="px-4 py-2 rounded-full text-xs font-semibold bg-amber-100 text-amber-600">
+                                Menunggu Pembayaran
+                            </span>
+
+                        </td>
+
+                        <td class="px-6 py-5">
+
+                            <div class="flex items-center justify-center gap-2">
+
+                                <button class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-sm transition">
+                                    Detail
+                                </button>
+
+                                <button class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm transition">
+                                    Bayar
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+
+                        <td class="px-6 py-5 font-semibold text-slate-700">
+                            INV-2026-002
+                        </td>
+
+                        <td class="px-6 py-5">
+                            Lemari Aluminium Minimalis
+                        </td>
+
+                        <td class="px-6 py-5 text-slate-500">
+                            15 Mei 2026
+                        </td>
+
+                        <td class="px-6 py-5 font-semibold text-slate-700">
+                            Rp 3.250.000
+                        </td>
+
+                        <td class="px-6 py-5">
+
+                            <span class="px-4 py-2 rounded-full text-xs font-semibold bg-amber-100 text-amber-600">
+                                Menunggu Pembayaran
+                            </span>
+
+                        </td>
+
+                        <td class="px-6 py-5">
+
+                            <div class="flex items-center justify-center gap-2">
+
+                                <button class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-sm transition">
+                                    Detail
+                                </button>
+
+                                <button class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm transition">
+                                    Bayar
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>

@@ -11,7 +11,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
-
+use App\Http\Controllers\UserDashboardController;
 
 Route::get('/', [ProductController::class, 'home'])
     ->name('home');
@@ -32,15 +32,16 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware(['auth', 'role:user'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('user.dashboard');
-    })->name('user.dashboard');
+    Route::get(
+        '/dashboard',
+        [UserDashboardController::class, 'index']
+    )->name('user.dashboard');
 
 
-    // Route::get('/products', [
-    //     ProductController::class,
-    //     'publicIndex'
-    // ]);
+    Route::get('/products', [
+        ProductController::class,
+        'publicIndex'
+    ]);
 
     Route::get('/orders/create', [ OrderController::class, 'create' ]);
     Route::post('/orders', [ OrderController::class,'store']);
