@@ -63,9 +63,6 @@ class ProductController extends Controller
                 => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // =========================
-        // UPLOAD IMAGE
-        // =========================
         $imagePath = null;
 
         if ($request->hasFile('image')) {
@@ -78,9 +75,6 @@ class ProductController extends Controller
                 );
         }
 
-        // =========================
-        // CREATE PRODUCT
-        // =========================
         Product::create([
 
             'name'
@@ -130,7 +124,7 @@ class ProductController extends Controller
     }
 
     // =========================
-    // FORM EDIT PRODUCT
+    //  EDIT PRODUCT
     // =========================
     public function edit(Product $product)
     {
@@ -143,10 +137,8 @@ class ProductController extends Controller
     // =========================
     // UPDATE PRODUCT
     // =========================
-    public function update(
-        Request $request,
-        Product $product
-    ) {
+    public function update( Request $request, Product $product ) 
+    {
 
         $request->validate([
 
@@ -259,32 +251,34 @@ class ProductController extends Controller
             );
     }
 
-    /**
-     * USER PRODUCT LIST
-     */
+    public function home()
+    {
+        $products = Product::where(
+                'is_active',
+                true
+            )
+            ->latest()
+            ->take(4)
+            ->get();
+
+        return view(
+            'home',
+            compact('products')
+        );
+    }
+
     public function publicIndex()
     {
         $products = Product::where(
-            'is_active',
-            true
-        )
-        ->latest()
-        ->get();
+                'is_active',
+                true
+            )
+            ->latest()
+            ->get();
 
         return view(
             'user.products.index',
             compact('products')
         );
-    }
-
-    /**
-     * USER PRODUCT DETAIL
-     */
-    public function publicShow(Product $product)
-    {
-        return view(
-            'user.products.show',
-            compact('product')
-        );
-    }
+    }   
 }

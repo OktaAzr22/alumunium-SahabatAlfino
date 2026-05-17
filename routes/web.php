@@ -12,80 +12,42 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
 
+Route::get('/', [ProductController::class, 'home'])
+    ->name('home');
 
-// ======================
-// GUEST
-// ======================
-
+Route::get('/products/{product}', [
+    ProductController::class,
+    'publicShow'
+]);
+    
 Route::middleware('guest')->group(function () {
-
-    
-
     Route::post('/login', [AuthController::class, 'login']);
-
-    
-
     Route::post('/register', [AuthController::class, 'register']);
 });
-
-
-// ======================
-// LOGOUT
-// ======================
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-
-// ======================
-// USER
-// ======================
-
 Route::middleware(['auth', 'role:user'])->group(function () {
 
-    Route::get('/dashboard',
-        fn() => view('user.dashboard'));
+    Route::get('/dashboard', function () {
+        return view('user.dashboard');
+    })->name('user.dashboard');
 
-    Route::get('/products', [
-        ProductController::class,
-        'publicIndex'
-    ]);
 
-    Route::get('/products/{product}', [
-        ProductController::class,
-        'publicShow'
-    ]);
+    // Route::get('/products', [
+    //     ProductController::class,
+    //     'publicIndex'
+    // ]);
 
-    Route::get('/orders/create', [
-        OrderController::class,
-        'create'
-    ]);
-
-    Route::post('/orders', [
-        OrderController::class,
-        'store'
-    ]);
-
-    Route::get('/my-orders', [
-        OrderController::class,
-        'myOrders'
-    ]);
-
-    Route::get('/my-orders/{order}', [
-        OrderController::class,
-        'showMyOrder'
-    ]);
-
-    Route::post(
-        '/orders/{order}/payment',
-        [PaymentController::class, 'store']
-    );
-
+    Route::get('/orders/create', [ OrderController::class, 'create' ]);
+    Route::post('/orders', [ OrderController::class,'store']);
+    Route::get('/my-orders', [OrderController::class,'myOrders']);
+    Route::get('/my-orders/{order}', [OrderController::class,'showMyOrder']);
+    Route::post('/orders/{order}/payment',[PaymentController::class, 'store']);
+    
 });
 
 
