@@ -34,25 +34,9 @@
 
             <div class="mt-6 flex flex-wrap gap-3">
 
-                <!-- Button 1 -->
-                <a href="{{ $buttonLink1 ?? '#' }}"
-                   class="px-5 py-3 bg-emerald-500 hover:bg-emerald-600 transition rounded-xl text-sm font-semibold shadow-lg">
+                
 
-                    <i class="{{ $buttonIcon1 ?? 'fas fa-shopping-cart' }} mr-2"></i>
-
-                    {{ $buttonText1 ?? 'Pesan Furnitur' }}
-
-                </a>
-
-                <!-- Button 2 -->
-                <a href="{{ $buttonLink2 ?? '#' }}"
-                   class="px-5 py-3 bg-white/20 hover:bg-white/30 border border-white/20 backdrop-blur-md transition rounded-xl text-sm font-semibold">
-
-                    <i class="{{ $buttonIcon2 ?? 'fas fa-eye' }} mr-2"></i>
-
-                    {{ $buttonText2 ?? 'Lihat Katalog' }}
-
-                </a>
+               
 
             </div>
 

@@ -24,14 +24,11 @@ return new class extends Migration
                 ->default(0);
 
             // ukuran standar
-            $table->integer('standard_length')
-                ->nullable();
+            $table->decimal('standard_length', 8, 2)->nullable();
 
-            $table->integer('standard_width')
-                ->nullable();
+$table->decimal('standard_width', 8, 2)->nullable();
 
-            $table->integer('standard_height')
-                ->nullable();
+$table->decimal('standard_height', 8, 2)->nullable();
 
             // pengali kebutuhan frame
             $table->decimal('frame_multiplier', 8, 2)

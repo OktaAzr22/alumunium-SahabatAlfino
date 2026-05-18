@@ -71,7 +71,7 @@
                 </h2>
 
                 <p class="text-sm text-slate-500 mt-1">
-                    Pesanan yang belum dibayar atau masih DP
+                    List pesanan baru masuk, belum bayar, atau masi DP
                 </p>
 
             </div>
@@ -87,158 +87,223 @@
         <!-- TABLE -->
         <div class="overflow-x-auto">
 
-            <table class="w-full">
+    <table class="w-full">
 
-                <thead class="bg-slate-50">
+        <!-- HEAD -->
+        <thead class="bg-slate-50 border-b border-slate-100">
 
-                    <tr class="text-left text-sm text-slate-600">
+            <tr class="text-left text-xs uppercase tracking-wide text-slate-500">
 
-                        <th class="px-6 py-4 font-semibold">
-                            Kode
-                        </th>
+                <th class="px-6 py-4 font-semibold">
+                    Resi
+                </th>
 
-                        <th class="px-6 py-4 font-semibold">
-                            Produk
-                        </th>
+                <th class="px-6 py-4 font-semibold">
+                    Produk
+                </th>
 
-                        <th class="px-6 py-4 font-semibold">
-                            Tanggal
-                        </th>
+                <th class="px-6 py-4 font-semibold">
+                    Tanggal
+                </th>
 
-                        <th class="px-6 py-4 font-semibold">
-                            Total
-                        </th>
+                <th class="px-6 py-4 font-semibold">
+                    Total Harga
+                </th>
 
-                        <th class="px-6 py-4 font-semibold">
-                            Pembayaran
-                        </th>
+                <th class="px-6 py-4 font-semibold">
+                    Pembayaran
+                </th>
 
-                        <th class="px-6 py-4 font-semibold">
-                            Status
-                        </th>
+                <th class="px-6 py-4 font-semibold">
+                    Status
+                </th>
 
-                        <th class="px-6 py-4 font-semibold text-center">
-                            Aksi
-                        </th>
+                <th class="px-6 py-4 font-semibold text-center">
+                    Aksi
+                </th>
 
-                    </tr>
+            </tr>
 
-                </thead>
+        </thead>
 
-                <tbody class="divide-y divide-slate-100">
+        <!-- BODY -->
+        <tbody class="divide-y divide-slate-100 bg-white">
 
-                    @forelse($paymentOrders as $order)
+            @forelse($paymentOrders as $order)
 
-                        <tr class="hover:bg-slate-50 transition">
+                @php
 
-                            <!-- KODE -->
-                            <td class="px-6 py-5 font-semibold text-slate-700">
+                    $statusName = strtolower(
+                        $order->status->name ?? ''
+                    );
 
-                                {{ $order->code }}
+                @endphp
 
-                            </td>
+                <tr class="hover:bg-slate-50 transition">
 
-                            <!-- PRODUK -->
-                            <td class="px-6 py-5">
+                    <!-- RESI -->
+                    <td class="px-6 py-5">
 
-                                {{ $order->product->name ?? '-' }}
+                        <div class="font-semibold text-slate-800">
 
-                            </td>
+                            {{ $order->code }}
 
-                            <!-- TANGGAL -->
-                            <td class="px-6 py-5 text-slate-500">
+                        </div>
 
-                                {{ $order->created_at->format('d M Y') }}
+                    </td>
 
-                            </td>
+                    <!-- PRODUK -->
+                    <td class="px-6 py-5">
 
-                            <!-- TOTAL -->
-                            <td class="px-6 py-5 font-semibold text-slate-700">
+                        <div class="font-medium text-slate-700">
 
-                                Rp {{ number_format($order->estimated_price,0,',','.') }}
+                            {{ $order->product->name ?? '-' }}
 
-                            </td>
+                        </div>
 
-                            <!-- PEMBAYARAN -->
-                            <td class="px-6 py-5">
+                    </td>
 
-                                @if($order->status_id == 1)
+                    <!-- TANGGAL -->
+                    <td class="px-6 py-5 text-slate-500 text-sm">
 
-                                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-red-100 text-red-600">
+                        {{ $order->created_at->format('d M Y') }}
 
-                                        Belum Bayar
+                    </td>
 
-                                    </span>
+                    <!-- TOTAL -->
+                    <td class="px-6 py-5">
 
-                                @elseif($order->status_id == 2)
+                        <div class="font-semibold text-slate-800">
 
-                                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-amber-100 text-amber-600">
+                            @php
 
-                                        DP
+                                $price =
+                                    $order->final_price
+                                    ?? $order->estimated_price;
 
-                                    </span>
+                            @endphp
 
-                                @endif
+                            Rp {{ number_format($price,0,',','.') }}
 
-                            </td>
+                        </div>
 
-                            <!-- STATUS -->
-                            <td class="px-6 py-5">
+                    </td>
 
-                                <span class="px-4 py-2 rounded-full text-xs font-semibold bg-sky-100 text-sky-600">
+                    <!-- PEMBAYARAN -->
+                    <td class="px-6 py-5">
 
-                                    {{ $order->status->name ?? '-' }}
+                        @if($statusName === 'pending')
 
-                                </span>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-600">
 
-                            </td>
+                                Belum Bayar
 
-                            <!-- AKSI -->
-                            <td class="px-6 py-5">
+                            </span>
 
-                                <div class="flex items-center justify-center gap-2">
+                        @elseif($statusName === 'menunggu pembayaran')
 
-                                    <!-- DETAIL -->
-                                    <a
-                                        href="{{ url('/orders/'.$order->id) }}"
-                                        class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-sm transition"
-                                    >
-                                        Detail
-                                    </a>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
 
-                                    <!-- BAYAR -->
-                                    <a
-                                        href="#"
-                                        class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm transition"
-                                    >
-                                        Bayar
-                                    </a>
+                                Menunggu Pembayaran
 
-                                </div>
+                            </span>
 
-                            </td>
+                        @elseif($statusName === 'dicek admin')
 
-                        </tr>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-700">
 
-                    @empty
+                                Dicek Admin
 
-                        <tr>
+                            </span>
 
-                            <td colspan="7" class="px-6 py-10 text-center text-slate-500">
+                        @endif
 
-                                Tidak ada pesanan menunggu pembayaran
+                    </td>
 
-                            </td>
+                    <!-- STATUS -->
+                    <td class="px-6 py-5">
 
-                        </tr>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
 
-                    @endforelse
+                            {{ $order->status->name ?? '-' }}
 
-                </tbody>
+                        </span>
 
-            </table>
+                    </td>
 
-        </div>
+                    
+                    <!-- AKSI -->
+                    <td class="px-6 py-5">
+
+                        <div class="flex items-center justify-center">
+
+                            <!-- DETAIL -->
+                            <a
+                                href="{{ url('/my-orders/'.$order->id) }}"
+                                class="
+                                    w-10
+                                    h-10
+                                    rounded-xl
+                                    bg-sky-50
+                                    hover:bg-sky-100
+                                    text-sky-600
+                                    flex
+                                    items-center
+                                    justify-center
+                                    transition
+                                "
+                                title="Detail Pesanan"
+                            >
+
+                                <i class="fas fa-eye text-sm"></i>
+
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            @empty
+
+                <tr>
+
+                    <td colspan="7" class="px-6 py-14 text-center">
+
+                        <div class="flex flex-col items-center">
+
+                            <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+
+                                <i class="fas fa-receipt text-slate-400 text-2xl"></i>
+
+                            </div>
+
+                            <h3 class="text-lg font-semibold text-slate-700 mb-1">
+
+                                Tidak Ada Pembayaran
+
+                            </h3>
+
+                            <p class="text-sm text-slate-500">
+
+                                Pesanan menunggu pembayaran akan muncul di sini.
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            @endforelse
+
+        </tbody>
+
+    </table>
+
+</div>
 
     </div>
 

@@ -112,14 +112,7 @@
                 {{-- SUDAH LOGIN --}}
                 @auth
 
-                    {{-- RIWAYAT --}}
-                    <a
-                        href="{{ url('/my-orders') }}"
-                        class="px-4 py-2 rounded-full text-sm font-semibold border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition flex items-center gap-2"
-                    >
-                        <i class="fas fa-clock-rotate-left"></i>
-                        Riwayat
-                    </a>
+                    
 
                     {{-- LOGOUT --}}
                     <form

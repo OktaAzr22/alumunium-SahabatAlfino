@@ -168,7 +168,7 @@
                     </h2>
 
                     <p class="text-sm text-slate-500 mt-1">
-                        Isi detail ukuran dan kebutuhan furnitur Anda
+                        Isi detail ukuran dan kebutuhan  Anda
                     </p>
 
                 </div>
@@ -188,33 +188,47 @@
                             <div>
 
                                 <label class="text-sm font-semibold text-slate-600">
-                                    Panjang (cm)
+                                    Panjang (meter)
                                 </label>
 
                                 <input
                                     type="number"
                                     name="length"
                                     value="{{ old('length') }}"
+                                    min="0.1"
+                                    step="0.01"
+                                    placeholder="Contoh: 1.5"
                                     required
                                     class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none"
                                 >
+
+                                <p class="text-xs text-slate-400 mt-2">
+                                    Gunakan satuan meter. Contoh: 0.5 = 50 cm
+                                </p>
 
                             </div>
 
                             {{-- LEBAR --}}
                             <div>
 
-                                <label class="text-sm font-semibold text-slate-600">
-                                    Lebar (cm)
+                               <label class="text-sm font-semibold text-slate-600">
+                                    Lebar (meter)
                                 </label>
 
                                 <input
                                     type="number"
                                     name="width"
                                     value="{{ old('width') }}"
+                                    min="0.1"
+                                    step="0.01"
+                                    placeholder="Contoh: 0.8"
                                     required
                                     class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none"
                                 >
+
+                                <p class="text-xs text-slate-400 mt-2">
+                                    Gunakan satuan meter
+                                </p>
 
                             </div>
 
@@ -222,16 +236,23 @@
                             <div>
 
                                 <label class="text-sm font-semibold text-slate-600">
-                                    Tinggi (cm)
+                                    Tinggi (meter)
                                 </label>
 
                                 <input
                                     type="number"
                                     name="height"
                                     value="{{ old('height') }}"
+                                    min="0.1"
+                                    step="0.01"
+                                    placeholder="Contoh: 2"
                                     required
                                     class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none"
                                 >
+
+                                <p class="text-xs text-slate-400 mt-2">
+                                    Gunakan satuan meter
+                                </p>
 
                             </div>
 
@@ -340,84 +361,91 @@
 
                     </div>
 
-                    {{-- FILE --}}
-{{-- FILE --}}
+                    {{-- CONTOH DESIGN --}}
 <div>
 
-    <label class="text-sm font-semibold text-slate-600">
-        Upload Design
-    </label>
+    <div class="flex items-center justify-between mb-4">
 
-    <div class="grid md:grid-cols-2 gap-5 mt-3">
-
-        {{-- INPUT --}}
         <div>
 
-            <label
-                for="designInput"
-                class="flex flex-col items-center justify-center w-full h-56 border-2 border-dashed border-slate-300 rounded-3xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/30 transition"
-            >
+            <h3 class="text-lg font-bold text-slate-700">
+                Contoh Design yang Disarankan
+            </h3>
 
-                <div class="flex flex-col items-center justify-center text-center px-5">
-
-                    <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mb-4">
-
-                        <i class="fas fa-image text-emerald-600 text-2xl"></i>
-
-                    </div>
-
-                    <h4 class="font-bold text-slate-700">
-                        Upload Design
-                    </h4>
-
-                    <p class="text-sm text-slate-500 mt-2">
-                        Klik untuk upload gambar design furnitur
-                    </p>
-
-                    <p class="text-xs text-slate-400 mt-3">
-                        JPG, JPEG, PNG (max 2MB)
-                    </p>
-
-                </div>
-
-                <input
-                    id="designInput"
-                    type="file"
-                    name="design_file"
-                    accept=".jpg,.jpeg,.png"
-                    class="hidden"
-                >
-
-            </label>
+            <p class="text-sm text-slate-500 mt-1">
+                Upload gambar dengan tampilan jelas agar tim kami mudah memahami kebutuhan furnitur Anda.
+            </p>
 
         </div>
 
-        {{-- PREVIEW --}}
-        <div>
+    </div>
 
-            <div
-                class="w-full h-56 rounded-3xl border border-slate-200 bg-slate-50 overflow-hidden relative"
+    <div class="grid md:grid-cols-3 gap-4">
+
+        {{-- CONTOH 1 --}}
+        <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
+
+            <img
+                src="{{ asset('images/design-example-1.jpg') }}"
+                alt="Contoh Design 1"
+                class="w-full h-44 object-cover"
             >
 
-                {{-- EMPTY --}}
-                <div
-                    id="emptyPreview"
-                    class="absolute inset-0 flex flex-col items-center justify-center text-slate-400"
-                >
+            <div class="p-4">
 
-                    <i class="fas fa-image text-5xl mb-3"></i>
+                <h4 class="font-semibold text-slate-700">
+                    Tampak Depan
+                </h4>
 
-                    <p class="text-sm">
-                        Preview gambar akan tampil di sini
-                    </p>
+                <p class="text-sm text-slate-500 mt-1">
+                    Pastikan ukuran dan bentuk furnitur terlihat jelas.
+                </p>
 
-                </div>
+            </div>
 
-                {{-- IMAGE --}}
-                <img
-                    id="imagePreview"
-                    class="hidden w-full h-full object-cover"
-                >
+        </div>
+
+        {{-- CONTOH 2 --}}
+        <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
+
+            <img
+                src="{{ asset('images/design-example-2.jpg') }}"
+                alt="Contoh Design 2"
+                class="w-full h-44 object-cover"
+            >
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-700">
+                    Sketsa Ukuran
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Sertakan ukuran panjang, lebar, dan tinggi.
+                </p>
+
+            </div>
+
+        </div>
+
+        {{-- CONTOH 3 --}}
+        <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
+
+            <img
+                src="{{ asset('images/design-example-3.jpg') }}"
+                alt="Contoh Design 3"
+                class="w-full h-44 object-cover"
+            >
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-700">
+                    Referensi Interior
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Bisa berupa foto referensi dari internet atau Pinterest.
+                </p>
 
             </div>
 
@@ -426,6 +454,91 @@
     </div>
 
 </div>
+                    {{-- FILE --}}
+                    <div>
+
+                        <label class="text-sm font-semibold text-slate-600">
+                            Upload Design
+                        </label>
+
+                        <div class="grid md:grid-cols-2 gap-5 mt-3">
+
+                            {{-- INPUT --}}
+                            <div>
+
+                                <label
+                                    for="designInput"
+                                    class="flex flex-col items-center justify-center w-full h-56 border-2 border-dashed border-slate-300 rounded-3xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/30 transition"
+                                >
+
+                                    <div class="flex flex-col items-center justify-center text-center px-5">
+
+                                        <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mb-4">
+
+                                            <i class="fas fa-image text-emerald-600 text-2xl"></i>
+
+                                        </div>
+
+                                        <h4 class="font-bold text-slate-700">
+                                            Upload Design
+                                        </h4>
+
+                                        <p class="text-sm text-slate-500 mt-2">
+                                            Klik untuk upload gambar design furnitur
+                                        </p>
+
+                                        <p class="text-xs text-slate-400 mt-3">
+                                            JPG, JPEG, PNG (max 2MB)
+                                        </p>
+
+                                    </div>
+
+                                    <input
+                                        id="designInput"
+                                        type="file"
+                                        name="design_file"
+                                        accept=".jpg,.jpeg,.png"
+                                        class="hidden"
+                                    >
+
+                                </label>
+
+                            </div>
+
+                            {{-- PREVIEW --}}
+                            <div>
+
+                                <div
+                                    class="w-full h-56 rounded-3xl border border-slate-200 bg-slate-50 overflow-hidden relative"
+                                >
+
+                                    {{-- EMPTY --}}
+                                    <div
+                                        id="emptyPreview"
+                                        class="absolute inset-0 flex flex-col items-center justify-center text-slate-400"
+                                    >
+
+                                        <i class="fas fa-image text-5xl mb-3"></i>
+
+                                        <p class="text-sm">
+                                            Preview gambar akan tampil di sini
+                                        </p>
+
+                                    </div>
+
+                                    {{-- IMAGE --}}
+                                    <img
+                                        id="imagePreview"
+                                        class="hidden w-full h-full object-cover"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                     {{-- NOTES --}}
                     <div>

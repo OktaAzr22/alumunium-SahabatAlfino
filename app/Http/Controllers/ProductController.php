@@ -44,20 +44,23 @@ class ProductController extends Controller
             'description'
                 => 'nullable|string',
 
+            // harga per m²
             'base_price'
                 => 'required|numeric|min:0',
 
+            // ukuran dalam meter
             'standard_length'
-                => 'nullable|numeric|min:1',
+                => 'nullable|numeric|min:0.1',
 
             'standard_width'
-                => 'nullable|numeric|min:1',
+                => 'nullable|numeric|min:0.1',
 
             'standard_height'
-                => 'nullable|numeric|min:1',
+                => 'nullable|numeric|min:0.1',
 
+            // pengali kebutuhan frame
             'frame_multiplier'
-                => 'nullable|numeric|min:0',
+                => 'nullable|numeric|min:0.1',
 
             'image'
                 => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -124,7 +127,7 @@ class ProductController extends Controller
     }
 
     // =========================
-    //  EDIT PRODUCT
+    // FORM EDIT PRODUCT
     // =========================
     public function edit(Product $product)
     {
@@ -137,7 +140,10 @@ class ProductController extends Controller
     // =========================
     // UPDATE PRODUCT
     // =========================
-    public function update( Request $request, Product $product ) 
+    public function update(
+        Request $request,
+        Product $product
+    )
     {
 
         $request->validate([
@@ -152,16 +158,16 @@ class ProductController extends Controller
                 => 'required|numeric|min:0',
 
             'standard_length'
-                => 'nullable|numeric|min:1',
+                => 'nullable|numeric|min:0.1',
 
             'standard_width'
-                => 'nullable|numeric|min:1',
+                => 'nullable|numeric|min:0.1',
 
             'standard_height'
-                => 'nullable|numeric|min:1',
+                => 'nullable|numeric|min:0.1',
 
             'frame_multiplier'
-                => 'nullable|numeric|min:0',
+                => 'nullable|numeric|min:0.1',
 
             'image'
                 => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -177,7 +183,6 @@ class ProductController extends Controller
         // =========================
         if ($request->hasFile('image')) {
 
-            // hapus image lama
             if ($product->image) {
 
                 Storage::disk('public')
@@ -234,14 +239,12 @@ class ProductController extends Controller
     // =========================
     public function destroy(Product $product)
     {
-        // hapus image
         if ($product->image) {
 
             Storage::disk('public')
                 ->delete($product->image);
         }
 
-        // hapus product
         $product->delete();
 
         return redirect('/admin/products')
@@ -251,6 +254,9 @@ class ProductController extends Controller
             );
     }
 
+    // =========================
+    // HOME PRODUCT
+    // =========================
     public function home()
     {
         $products = Product::where(
@@ -267,6 +273,9 @@ class ProductController extends Controller
         );
     }
 
+    // =========================
+    // PUBLIC PRODUCT
+    // =========================
     public function publicIndex()
     {
         $products = Product::where(
@@ -280,5 +289,5 @@ class ProductController extends Controller
             'user.products.index',
             compact('products')
         );
-    }   
+    }
 }

@@ -10,10 +10,8 @@
         {{-- LEFT --}}
         <div class="lg:w-2/3">
 
-            {{-- CARD --}}
             <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
 
-                {{-- TOP --}}
                 <div class="p-6 border-b border-slate-100 flex items-start justify-between gap-4">
 
                     <div>
@@ -30,7 +28,7 @@
 
                         <p class="text-sm text-slate-500 mt-2">
 
-                            {{ $order->created_at->format('d M Y H:i') }}
+                            {{ $order->created_at->format('d M Y') }}
 
                         </p>
 
@@ -40,13 +38,17 @@
 
                         $statusColor = match(strtolower($order->status->name)) {
 
-                            'pending' => 'bg-amber-100 text-amber-600',
+                            'pending'
+                                => 'bg-amber-100 text-amber-700',
 
-                            'diproses' => 'bg-sky-100 text-sky-600',
+                            'diproses'
+                                => 'bg-sky-100 text-sky-700',
 
-                            'selesai' => 'bg-emerald-100 text-emerald-600',
+                            'selesai'
+                                => 'bg-emerald-100 text-emerald-700',
 
-                            default => 'bg-slate-100 text-slate-600'
+                            default
+                                => 'bg-slate-100 text-slate-700'
 
                         };
 
@@ -60,40 +62,124 @@
 
                 </div>
 
-                {{-- BODY --}}
-                <div class="p-6 space-y-8">
+                <div class="p-6 space-y-6">
 
-                    {{-- PRODUK --}}
-                    <div>
+                    <div class="flex flex-col md:flex-row gap-5">
 
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">
-                            Produk
-                        </h3>
+                        @if($order->detail->product->image)
 
-                        <div class="flex flex-col md:flex-row gap-5">
+                            <img
+                                src="{{ asset('storage/' . $order->detail->product->image) }}"
+                                class="w-full md:w-60 h-56 object-cover rounded-2xl border border-slate-200"
+                            >
 
-                            @if($order->detail->product->image)
+                        @endif
 
-                                <img
-                                    src="{{ asset('storage/' . $order->detail->product->image) }}"
-                                    class="w-full md:w-56 h-52 object-cover rounded-2xl border border-slate-200"
-                                >
+                        <div class="flex-1">
 
-                            @endif
+                            <h2 class="text-2xl font-bold text-slate-800">
 
-                            <div class="flex-1">
+                                {{ $order->detail->product->name }}
 
-                                <h4 class="text-xl font-bold text-slate-800">
+                            </h2>
 
-                                    {{ $order->detail->product->name }}
+                            <p class="text-sm text-slate-500 leading-relaxed mt-3">
 
-                                </h4>
+                                {{ $order->detail->product->description ?? 'Deskripsi produk tidak tersedia.' }}
 
-                                <p class="text-sm text-slate-500 mt-3 leading-relaxed">
+                            </p>
 
-                                    {{ $order->detail->product->description ?? 'Produk furnitur aluminium custom premium.' }}
+                            <div class="grid md:grid-cols-2 gap-4 mt-6">
 
-                                </p>
+                                <div class="bg-slate-50 rounded-2xl p-5">
+
+                                    <h4 class="font-semibold text-slate-700 mb-4">
+
+                                        Ukuran
+
+                                    </h4>
+
+                                    <div class="space-y-2 text-sm text-slate-600">
+
+                                        <div class="flex justify-between">
+
+                                            <span>Panjang</span>
+
+                                            <span class="font-semibold">
+
+                                                {{ $order->detail->length }} cm
+
+                                            </span>
+
+                                        </div>
+
+                                        <div class="flex justify-between">
+
+                                            <span>Lebar</span>
+
+                                            <span class="font-semibold">
+
+                                                {{ $order->detail->width }} cm
+
+                                            </span>
+
+                                        </div>
+
+                                        <div class="flex justify-between">
+
+                                            <span>Tinggi</span>
+
+                                            <span class="font-semibold">
+
+                                                {{ $order->detail->height }} cm
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- MATERIAL -->
+                                <div class="bg-slate-50 rounded-2xl p-5">
+
+                                    <h4 class="font-semibold text-slate-700 mb-4">
+
+                                        Material
+
+                                    </h4>
+
+                                    <div class="space-y-2 text-sm text-slate-600">
+
+                                        <div class="flex justify-between">
+
+                                            <span>Jenis</span>
+
+                                            <span class="font-semibold">
+
+                                                {{ $order->detail->material->name }}
+
+                                            </span>
+
+                                        </div>
+
+                                        <div class="flex justify-between">
+
+                                            <span>Kebutuhan</span>
+
+                                            <span class="font-semibold">
+
+                                                {{ $order->detail->material_qty }}
+                                                {{ $order->detail->material->unit }}
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
@@ -101,147 +187,57 @@
 
                     </div>
 
-                    {{-- DETAIL --}}
-                    <div class="grid md:grid-cols-2 gap-5">
+                    <!-- ACCESSORIES -->
+                    <div class="bg-slate-50 rounded-2xl p-5">
 
-                        {{-- UKURAN --}}
-                        <div class="bg-slate-50 rounded-2xl p-5">
+                        <h3 class="font-semibold text-slate-700 mb-4">
 
-                            <h4 class="font-bold text-slate-700 mb-4">
-                                Ukuran Custom
-                            </h4>
+                            Accessories Tambahan
 
-                            <div class="space-y-2 text-sm text-slate-600">
-
-                                <p>
-                                    Panjang:
-                                    <span class="font-semibold">
-                                        {{ $order->detail->length }} cm
-                                    </span>
-                                </p>
-
-                                <p>
-                                    Lebar:
-                                    <span class="font-semibold">
-                                        {{ $order->detail->width }} cm
-                                    </span>
-                                </p>
-
-                                <p>
-                                    Tinggi:
-                                    <span class="font-semibold">
-                                        {{ $order->detail->height }} cm
-                                    </span>
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        {{-- MATERIAL --}}
-                        <div class="bg-slate-50 rounded-2xl p-5">
-
-                            <h4 class="font-bold text-slate-700 mb-4">
-                                Material
-                            </h4>
-
-                            <div class="space-y-2 text-sm text-slate-600">
-
-                                <p>
-
-                                    Material:
-                                    <span class="font-semibold">
-
-                                        {{ $order->detail->material->name }}
-
-                                    </span>
-
-                                </p>
-
-                                <p>
-
-                                    Kebutuhan:
-                                    <span class="font-semibold">
-
-                                        {{ $order->detail->material_qty }}
-                                        {{ $order->detail->material->unit }}
-
-                                    </span>
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    {{-- ACCESSORIES --}}
-                    <div>
-
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">
-                            Accessories
                         </h3>
 
                         @if($order->detail->accessories->count())
 
-                            <div class="overflow-x-auto">
+                            <div class="space-y-3">
 
-                                <table class="w-full">
+                                @foreach($order->detail->accessories as $accessory)
 
-                                    <thead class="bg-slate-50">
+                                    <div class="flex items-center justify-between bg-white border border-slate-100 rounded-xl px-4 py-3">
 
-                                        <tr>
+                                        <div>
 
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
-                                                Nama
-                                            </th>
+                                            <p class="font-medium text-slate-700">
 
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
-                                                Qty
-                                            </th>
+                                                {{ $accessory->name }}
 
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">
-                                                Subtotal
-                                            </th>
+                                            </p>
 
-                                        </tr>
+                                            <p class="text-xs text-slate-500 mt-1">
 
-                                    </thead>
+                                                Qty:
+                                                {{ $accessory->pivot->qty }}
 
-                                    <tbody class="divide-y divide-slate-100">
+                                            </p>
 
-                                        @foreach($order->detail->accessories as $accessory)
+                                        </div>
 
-                                            <tr>
+                                        <div class="text-sm font-semibold text-slate-800">
 
-                                                <td class="px-4 py-4 text-sm text-slate-700">
-                                                    {{ $accessory->name }}
-                                                </td>
+                                            Rp {{ number_format($accessory->pivot->subtotal,0,',','.') }}
 
-                                                <td class="px-4 py-4 text-sm text-slate-700">
-                                                    {{ $accessory->pivot->qty }}x
-                                                </td>
+                                        </div>
 
-                                                <td class="px-4 py-4 text-sm font-semibold text-slate-800">
-                                                    Rp {{ number_format($accessory->pivot->subtotal,0,',','.') }}
-                                                </td>
+                                    </div>
 
-                                            </tr>
-
-                                        @endforeach
-
-                                    </tbody>
-
-                                </table>
+                                @endforeach
 
                             </div>
 
                         @else
 
-                            <div class="bg-slate-50 rounded-2xl p-5 text-sm text-slate-500">
+                            <div class="text-sm text-slate-500">
 
-                                Tidak ada accessories
+                                Tidak ada accessories tambahan
 
                             </div>
 
@@ -249,13 +245,16 @@
 
                     </div>
 
-                    {{-- NOTES --}}
+                    <!-- NOTES -->
                     <div class="grid md:grid-cols-2 gap-5">
 
+                        <!-- CATATAN USER -->
                         <div class="bg-slate-50 rounded-2xl p-5">
 
-                            <h4 class="font-bold text-slate-700 mb-3">
+                            <h4 class="font-semibold text-slate-700 mb-3">
+
                                 Catatan Tambahan
+
                             </h4>
 
                             <p class="text-sm text-slate-600 leading-relaxed">
@@ -266,10 +265,13 @@
 
                         </div>
 
+                        <!-- CATATAN ADMIN -->
                         <div class="bg-slate-50 rounded-2xl p-5">
 
-                            <h4 class="font-bold text-slate-700 mb-3">
+                            <h4 class="font-semibold text-slate-700 mb-3">
+
                                 Catatan Admin
+
                             </h4>
 
                             <p class="text-sm text-slate-600 leading-relaxed">
@@ -282,13 +284,15 @@
 
                     </div>
 
-                    {{-- DESIGN --}}
+                    <!-- DESIGN -->
                     @if($order->design_file)
 
                         <div>
 
-                            <h3 class="text-lg font-bold text-slate-800 mb-4">
+                            <h3 class="text-lg font-semibold text-slate-800 mb-4">
+
                                 Design Custom
+
                             </h3>
 
                             <img

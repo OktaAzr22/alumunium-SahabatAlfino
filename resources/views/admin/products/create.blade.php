@@ -110,7 +110,8 @@
                                 <div class="relative">
 
                                     <input type="number"
-                                           step="0.1"
+                                           step="0.01"
+    min="0.1"
                                            name="standard_length"
                                            value="{{ old('standard_length') }}"
                                            placeholder="0"
@@ -132,7 +133,8 @@
                                 <div class="relative">
 
                                     <input type="number"
-                                           step="0.1"
+                                            step="0.01"
+    min="0.1"
                                            name="standard_width"
                                            value="{{ old('standard_width') }}"
                                            placeholder="0"
@@ -154,7 +156,8 @@
                                 <div class="relative">
 
                                     <input type="number"
-                                           step="0.1"
+                                          step="0.01"
+    min="0.1"
                                            name="standard_height"
                                            value="{{ old('standard_height') }}"
                                            placeholder="0"

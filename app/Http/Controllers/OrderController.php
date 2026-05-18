@@ -48,22 +48,20 @@ class OrderController extends Controller
     // =========================
     public function store(Request $request)
     {
-        // =========================
-        // VALIDASI
-        // =========================
         $request->validate([
 
             'product_id'
                 => 'required|exists:products,id',
 
+            // ukuran meter
             'length'
-                => 'required|numeric|min:1',
+                => 'required|numeric|min:0.1',
 
             'width'
-                => 'required|numeric|min:1',
+                => 'required|numeric|min:0.1',
 
             'height'
-                => 'required|numeric|min:1',
+                => 'required|numeric|min:0.1',
 
             'qty'
                 => 'nullable|integer|min:1',
@@ -84,76 +82,67 @@ class OrderController extends Controller
                 => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        // =========================
-        // DATABASE TRANSACTION
-        // =========================
         DB::transaction(function () use ($request) {
 
             // =========================
-            // AMBIL PRODUCT
+            // PRODUCT
             // =========================
             $product = Product::findOrFail(
                 $request->product_id
             );
 
             // =========================
-            // AMBIL MATERIAL
+            // MATERIAL
             // =========================
             $material = Material::findOrFail(
                 $request->material_id
             );
 
             // =========================
-            // UKURAN
+            // UKURAN DALAM METER
             // =========================
-            $length = $request->length;
-            $width  = $request->width;
-            $height = $request->height;
+            $length = (float) $request->length;
+            $width  = (float) $request->width;
+            $height = (float) $request->height;
 
             $qty = $request->qty ?? 1;
 
             // =========================
-            // CM -> METER
-            // =========================
-            $lengthMeter = $length / 100;
-            $widthMeter  = $width / 100;
-            $heightMeter = $height / 100;
-
-            // =========================
-            // HITUNG TOTAL AREA
+            // HITUNG AREA
+            // depan + samping
             // =========================
             $area =
                 (
-                    ($lengthMeter * $heightMeter) * 2
-                ) +
+                    $length * $height
+                )
+                +
                 (
-                    ($widthMeter * $heightMeter) * 2
-                ) +
-                (
-                    $lengthMeter * $widthMeter
+                    $width * $height
                 );
 
-            $area = round(
-                $area,
-                2
-            );
+            $area = round($area, 2);
 
             // =========================
-            // HARGA DASAR PRODUK
-            // base_price = harga per m2
+            // HARGA DASAR
             // =========================
             $basePrice =
                 $area *
                 $product->base_price;
 
             // =========================
-            // HITUNG KEBUTUHAN FRAME
+            // HITUNG FRAME
             // =========================
             $frameLength =
                 (
-                    ($lengthMeter * 4) +
-                    ($widthMeter * 4) +
-                    ($heightMeter * 4)
+                    ($length * 2)
+                )
+                +
+                (
+                    ($width * 2)
+                )
+                +
+                (
+                    ($height * 4)
                 );
 
             // =========================
@@ -185,12 +174,12 @@ class OrderController extends Controller
                 ) * $qty;
 
             // =========================
-            // TOTAL ESTIMASI
+            // ESTIMASI AWAL
             // =========================
             $estimatedPrice = $subtotal;
 
             // =========================
-            // UPLOAD DESIGN FILE
+            // UPLOAD DESIGN
             // =========================
             $designFile = null;
 
@@ -234,7 +223,7 @@ class OrderController extends Controller
             ]);
 
             // =========================
-            // CREATE ORDER DETAIL
+            // CREATE DETAIL
             // =========================
             $orderDetail = OrderDetail::create([
 
@@ -285,54 +274,47 @@ class OrderController extends Controller
             // =========================
             // ACCESSORIES
             // =========================
-            // =========================
-// ACCESSORIES
-// =========================
-if ($request->accessories) {
+            if ($request->accessories) {
 
-    $accessories = Accessory::whereIn(
-        'id',
-        $request->accessories
-    )->get();
+                $accessories = Accessory::whereIn(
+                    'id',
+                    $request->accessories
+                )->get();
 
-    foreach ($accessories as $accessory) {
+                foreach ($accessories as $accessory) {
 
-        $qtyAccessory = 1;
+                    $qtyAccessory = 1;
 
-        $subtotalAccessory =
-            $accessory->price *
-            $qtyAccessory *
-            $qty;
+                    $subtotalAccessory =
+                        $accessory->price *
+                        $qtyAccessory *
+                        $qty;
 
-        // =========================
-        // TAMBAH KE ESTIMASI
-        // =========================
-        $estimatedPrice +=
-            $subtotalAccessory;
+                    // tambah estimasi
+                    $estimatedPrice +=
+                        $subtotalAccessory;
 
-        // =========================
-        // ATTACH ACCESSORY
-        // =========================
-        $orderDetail
-            ->accessories()
-            ->attach(
-                $accessory->id,
-                [
-                    'qty'
-                        => $qtyAccessory,
+                    // attach
+                    $orderDetail
+                        ->accessories()
+                        ->attach(
+                            $accessory->id,
+                            [
+                                'qty'
+                                    => $qtyAccessory,
 
-                    'price'
-                        => $accessory->price,
+                                'price'
+                                    => $accessory->price,
 
-                    'subtotal'
-                        => $subtotalAccessory,
-                ]
-            );
-    }
-}
+                                'subtotal'
+                                    => $subtotalAccessory,
+                            ]
+                        );
+                }
+            }
 
             // =========================
-            // UPDATE TOTAL ESTIMASI
+            // UPDATE ESTIMASI
             // =========================
             $order->update([
 
@@ -344,39 +326,39 @@ if ($request->accessories) {
             ]);
         });
 
-       return redirect()
-        ->route('user.dashboard')
-        ->with(
-            'success',
-            'Pesanan berhasil dibuat'
-        );
+        return redirect()
+            ->route('user.dashboard')
+            ->with(
+                'success',
+                'Pesanan berhasil dibuat'
+            );
     }
 
     // =========================
-// USER DETAIL ORDER
-// =========================
-public function showMyOrder(Order $order)
-{
-    if (
-        $order->user_id
-        != Auth::id()
-    ) {
-        abort(403);
+    // USER DETAIL ORDER
+    // =========================
+    public function showMyOrder(Order $order)
+    {
+        if (
+            $order->user_id
+            != Auth::id()
+        ) {
+            abort(403);
+        }
+
+        $order->load([
+            'product',
+            'detail.material',
+            'detail.accessories',
+            'payments',
+            'status',
+        ]);
+
+        return view(
+            'user.orders.show',
+            compact('order')
+        );
     }
-
-    $order->load([
-        'product',
-        'detail.material',
-        'detail.accessories',
-        'payments',
-        'status',
-    ]);
-
-    return view(
-        'user.orders.show',
-        compact('order')
-    );
-}
 
     // =========================
     // USER ORDER HISTORY
@@ -400,30 +382,28 @@ public function showMyOrder(Order $order)
         );
     }
 
-   public function track($code)
-{
-    $order = Order::with([
-        'product',
-        'status',
-    ])
-    ->where('code', $code)
-    ->first();
+    public function track($code)
+    {
+        $order = Order::with([
+            'product',
+            'status',
+        ])
+        ->where('code', $code)
+        ->first();
 
-    if (!$order) {
+        if (!$order) {
+
+            return response()->json([
+                'success' => false
+            ]);
+        }
+
+        $statuses = \App\Models\OrderStatus::all();
 
         return response()->json([
-            'success' => false
+            'success' => true,
+            'order' => $order,
+            'statuses' => $statuses
         ]);
     }
-
-    $statuses = \App\Models\OrderStatus::all();
-
-    return response()->json([
-        'success' => true,
-        'order' => $order,
-        'statuses' => $statuses
-    ]);
-}
-
-    
 }
