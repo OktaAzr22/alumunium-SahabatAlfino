@@ -2,37 +2,12 @@
 
 @section('content')
 
-<div class="min-h-screen bg-gray-50 py-6 px-4">
 
-    <div class="max-w-4xl mx-auto">
+<div class="min-h-screen bg-gray-50 py-8 px-4 md:px-6">
 
-        <!-- HEADER -->
-        <div class="mb-6">
-            <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                <i class="fas fa-box text-indigo-500"></i>
+    <div class="max-w-7xl mx-auto">
+        <x-breadcrumb />
 
-                <a href="{{ url('/admin/products') }}"
-                   class="hover:text-indigo-600">
-                    Produk
-                </a>
-
-                <i class="fas fa-chevron-right text-xs"></i>
-
-                <span class="text-indigo-600 font-medium">
-                    Tambah Produk
-                </span>
-            </div>
-
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
-                Tambah Produk
-            </h1>
-
-            <p class="text-sm text-gray-500 mt-1">
-                Lengkapi data produk di bawah ini
-            </p>
-        </div>
-
-        <!-- ERROR -->
         @if ($errors->any())
         <div class="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-2xl p-4">
             <div class="flex items-start gap-3">

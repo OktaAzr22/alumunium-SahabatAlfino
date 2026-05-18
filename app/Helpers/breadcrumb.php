@@ -12,18 +12,20 @@ if (! function_exists('generate_breadcrumb')) {
 
         foreach ($segments as $segment) {
 
+            // tetap tambahkan ke path
+            $path .= '/' . $segment;
+
+            // admin tidak ditampilkan
             if ($segment === 'admin') {
                 continue;
             }
-
-            $path .= '/' . $segment;
 
             // ubah slug jadi title
             $label = str_replace('-', ' ', $segment);
 
             $label = ucwords($label);
 
-            // kalau ID angka
+            // jika angka
             if (is_numeric($segment)) {
                 $label = 'Detail';
             }
@@ -34,3 +36,5 @@ if (! function_exists('generate_breadcrumb')) {
         return $breadcrumbs;
     }
 }
+
+

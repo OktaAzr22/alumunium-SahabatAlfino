@@ -4,49 +4,20 @@
 
 <div class="min-h-screen bg-gray-50 py-8 px-4 md:px-6">
 
+    <x-hero
+        title="Data Produk"
+        description="Kelola seluruh data produk aluminium custom."
+        buttonText="Tambah Produk"
+        buttonLink="/admin/products/create"
+    />
+
     <div class="max-w-7xl mx-auto">
-
-        <!-- HEADER -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">
-                    Data Produk
-                </h1>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Kelola seluruh data produk
-                </p>
-            </div>
-
-            <a href="{{ url('/admin/products/create') }}"
-               class="inline-flex items-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition shadow-sm">
-
-                <i class="fas fa-plus text-xs"></i>
-
-                Tambah Produk
-
-            </a>
-
-        </div>
-
-        <!-- ALERT -->
-        @if(session('success'))
-
-        <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm flex items-center gap-3">
-
-            <i class="fas fa-check-circle"></i>
-
-            {{ session('success') }}
-
-        </div>
-
-        @endif
+        <x-breadcrumb />
+        <x-session-alert />
 
         <!-- TABLE CARD -->
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-            <!-- TOP -->
             <div class="px-6 py-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
                 <div>
