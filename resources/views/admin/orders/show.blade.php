@@ -1,392 +1,541 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 
-<h1>Detail Pesanan</h1>
+<div class="max-w-7xl mx-auto px-4 md:px-6 py-6">
 
-<a href="{{ url('/admin/orders') }}">
-    ← Kembali
-</a>
+    {{-- HEADER --}}
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
 
-<br><br>
+        <div>
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                <a href="{{ url('/admin/orders') }}" class="hover:text-indigo-600">
+                    Pesanan
+                </a>
 
-@if(session('success'))
+                <i class="fas fa-chevron-right text-xs"></i>
 
-    <div style="
-        padding:10px;
-        border:1px solid green;
-        color:green;
-        margin-bottom:20px;
-    ">
-        {{ session('success') }}
+                <span class="text-indigo-600 font-medium">
+                    Detail Pesanan
+                </span>
+            </div>
+
+            <h1 class="text-2xl font-bold text-gray-800">
+                Detail Pesanan
+            </h1>
+
+            <p class="text-sm text-gray-500 mt-1">
+                Informasi lengkap pesanan customer
+            </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+
+            <button onclick="openUpdateModal()"
+                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition flex items-center gap-2">
+                <i class="fas fa-edit text-xs"></i>
+                Update Pesanan
+            </button>
+
+            <a href="{{ url('/admin/orders') }}"
+                class="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 rounded-xl text-sm font-medium text-gray-700 transition flex items-center gap-2">
+                <i class="fas fa-arrow-left text-xs"></i>
+                Kembali
+            </a>
+
+        </div>
     </div>
 
-@endif
+    {{-- ALERT --}}
+    @if(session('success'))
+    <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm flex items-center gap-3">
+        <i class="fas fa-check-circle"></i>
+        {{ session('success') }}
+    </div>
+    @endif
 
-{{-- ========================= --}}
-{{-- INFO ORDER --}}
-{{-- ========================= --}}
-<h3>Informasi Pesanan</h3>
+    {{-- BANNER --}}
+    <div class="mb-6 bg-indigo-600 rounded-2xl p-6 text-white">
 
-<table border="1" cellpadding="10" width="100%">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
 
-    <tr>
-        <td width="220">Kode Order</td>
-        <td>{{ $order->code }}</td>
-    </tr>
+            <div>
+                <p class="text-indigo-200 text-sm mb-1">
+                    STATUS PESANAN
+                </p>
 
-    <tr>
-        <td>Customer</td>
-        <td>{{ $order->user->name }}</td>
-    </tr>
+                <h2 class="text-2xl font-bold mb-2">
+                    {{ strtoupper($order->status->name ?? '-') }}
+                </h2>
 
-    <tr>
-        <td>Status</td>
-        <td>
-            <strong>
-                {{ $order->status->name ?? '-' }}
-            </strong>
-        </td>
-    </tr>
+                <p class="text-indigo-100 text-sm max-w-2xl">
+                    Pastikan status pesanan selalu diperbarui agar customer dapat memantau proses pengerjaan secara realtime.
+                </p>
+            </div>
 
-    <tr>
-        <td>Estimasi Sistem</td>
-        <td>
-            Rp {{ number_format($estimatedPrice) }}
-        </td>
-    </tr>
+            <div class="bg-white/10 rounded-2xl px-5 py-4 backdrop-blur-sm">
+                <p class="text-indigo-200 text-xs mb-1">
+                    Dibuat Pada
+                </p>
 
-    <tr>
-        <td>Biaya Lain-lain</td>
-        <td>
-            Rp {{ number_format($order->other_cost ?? 0) }}
-        </td>
-    </tr>
+                <h3 class="font-bold text-lg">
+                    {{ $order->created_at ? $order->created_at->format('d M Y') : '-' }}
+                </h3>
 
-    <tr>
-        <td>Harga Final</td>
-        <td>
-            <strong>
-                Rp {{ number_format($order->final_price ?? 0) }}
-            </strong>
-        </td>
-    </tr>
+                <p class="text-sm text-indigo-100">
+                    {{ $order->created_at ? $order->created_at->format('H:i') : '-' }} WIB
+                </p>
+            </div>
 
-    <tr>
-        <td>DP</td>
-        <td>
+        </div>
+    </div>
 
-            {{ $order->dp_percent ?? 0 }}%
+    {{-- INFORMASI PESANAN --}}
+    <div class="bg-white border border-gray-100 rounded-2xl mb-6 overflow-hidden">
 
-            <br>
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="font-semibold text-gray-800">
+                Informasi Pesanan
+            </h2>
+        </div>
 
-            Rp {{ number_format($order->dp_amount ?? 0) }}
+        <div class="p-6">
 
-        </td>
-    </tr>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
 
-</table>
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <p class="text-xs text-gray-400 mb-1">
+                        Kode Order
+                    </p>
 
-<br>
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->code }}
+                    </h3>
+                </div>
 
-{{-- ========================= --}}
-{{-- DETAIL PRODUK --}}
-{{-- ========================= --}}
-<h3>Detail Produk</h3>
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <p class="text-xs text-gray-400 mb-1">
+                        Customer
+                    </p>
 
-<table border="1" cellpadding="10" width="100%">
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->user->name }}
+                    </h3>
 
-    <tr>
-        <td width="220">Produk</td>
-        <td>
-            {{ $order->detail->product->name }}
-        </td>
-    </tr>
+                    <p class="text-sm text-gray-500 mt-1">
+                        {{ $order->user->email ?? '-' }}
+                    </p>
+                </div>
 
-    <tr>
-        <td>Ukuran</td>
-        <td>
-            {{ $order->detail->length }} cm x
-            {{ $order->detail->width }} cm x
-            {{ $order->detail->height }} cm
-        </td>
-    </tr>
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <p class="text-xs text-gray-400 mb-1">
+                        Estimasi Sistem
+                    </p>
 
-    <tr>
-        <td>Luas</td>
-        <td>
-            {{ $order->detail->area }} m²
-        </td>
-    </tr>
+                    <h3 class="font-bold text-gray-800">
+                        Rp {{ number_format($estimatedPrice,0,',','.') }}
+                    </h3>
+                </div>
 
-    <tr>
-        <td>Qty</td>
-        <td>
-            {{ $order->detail->qty }}
-        </td>
-    </tr>
+                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+                    <p class="text-xs text-indigo-500 mb-1">
+                        Harga Final
+                    </p>
 
-    <tr>
-        <td>Material</td>
-        <td>
-            {{ $order->detail->material->name }}
-        </td>
-    </tr>
+                    <h3 class="font-bold text-indigo-700 text-lg">
+                        Rp {{ number_format($order->final_price ?? 0,0,',','.') }}
+                    </h3>
+                </div>
 
-    <tr>
-        <td>Kebutuhan Material</td>
-        <td>
-            {{ $order->detail->material_qty }}
-            {{ $order->detail->material->unit }}
-        </td>
-    </tr>
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <p class="text-xs text-gray-400 mb-1">
+                        Biaya Tambahan
+                    </p>
 
-    <tr>
-        <td>Subtotal Produk</td>
-        <td>
-            Rp {{ number_format($order->detail->subtotal) }}
-        </td>
-    </tr>
+                    <h3 class="font-semibold text-gray-800">
+                        Rp {{ number_format($order->other_cost ?? 0,0,',','.') }}
+                    </h3>
+                </div>
 
-</table>
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <p class="text-xs text-gray-400 mb-1">
+                        DP
+                    </p>
 
-<br>
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->dp_percent ?? 0 }}%
+                    </h3>
 
-{{-- ========================= --}}
-{{-- AKSESORIS --}}
-{{-- ========================= --}}
-<h3>Aksesoris</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Rp {{ number_format($order->dp_amount ?? 0,0,',','.') }}
+                    </p>
+                </div>
 
-@if($order->detail->accessories->count())
+            </div>
 
-    <table border="1" cellpadding="10" width="100%">
+        </div>
+    </div>
 
-        <tr>
-            <th>Nama</th>
-            <th>Qty</th>
-            <th>Harga</th>
-            <th>Subtotal</th>
-        </tr>
+    {{-- DETAIL PRODUK --}}
+    <div class="bg-white border border-gray-100 rounded-2xl mb-6 overflow-hidden">
 
-        @foreach($order->detail->accessories as $accessory)
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="font-semibold text-gray-800">
+                Detail Produk
+            </h2>
+        </div>
 
-            <tr>
+        <div class="p-6">
 
-                <td>
-                    {{ $accessory->name }}
-                </td>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
 
-                <td>
-                    {{ $accessory->pivot->qty }}
-                </td>
+                <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                        Produk
+                    </p>
 
-                <td>
-                    Rp {{ number_format($accessory->pivot->price) }}
-                </td>
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->detail->product->name ?? '-' }}
+                    </h3>
+                </div>
 
-                <td>
-                    Rp {{ number_format($accessory->pivot->subtotal) }}
-                </td>
+                <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                        Ukuran
+                    </p>
 
-            </tr>
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->detail->length }} x
+                        {{ $order->detail->width }} x
+                        {{ $order->detail->height }} cm
+                    </h3>
+                </div>
 
-        @endforeach
+                <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                        Luas
+                    </p>
 
-        <tr>
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->detail->area }} m²
+                    </h3>
+                </div>
 
-            <td colspan="3">
-                <strong>Total Aksesoris</strong>
-            </td>
+                <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                        Qty
+                    </p>
 
-            <td>
-                <strong>
-                    Rp {{ number_format($accessoriesTotal) }}
-                </strong>
-            </td>
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->detail->qty }} pcs
+                    </h3>
+                </div>
 
-        </tr>
+                <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                        Material
+                    </p>
 
-    </table>
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->detail->material->name ?? '-' }}
+                    </h3>
+                </div>
 
-@else
+                <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                        Kebutuhan Material
+                    </p>
 
-    <p>Tidak ada aksesoris.</p>
+                    <h3 class="font-semibold text-gray-800">
+                        {{ $order->detail->material_qty }}
+                        {{ $order->detail->material->unit ?? '' }}
+                    </h3>
+                </div>
 
-@endif
+            </div>
 
-<br>
+        </div>
+    </div>
 
-{{-- ========================= --}}
-{{-- PEMBAYARAN --}}
-{{-- ========================= --}}
-<h3>Riwayat Pembayaran</h3>
+    {{-- AKSESORIS --}}
+    <div class="bg-white border border-gray-100 rounded-2xl mb-6 overflow-hidden">
 
-@if($order->payments->count())
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="font-semibold text-gray-800">
+                Aksesoris
+            </h2>
+        </div>
 
-    <table border="1" cellpadding="10" width="100%">
+        <div class="overflow-x-auto">
 
-        <tr>
-            <th>Tipe</th>
-            <th>Nominal</th>
-            <th>Status</th>
-            <th>Bukti</th>
-            <th>Aksi</th>
-        </tr>
+            @if($order->detail->accessories->count())
 
-        @foreach($order->payments as $payment)
+            <table class="min-w-full">
 
-            <tr>
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs text-gray-500 uppercase">
+                            Nama
+                        </th>
 
-                <td>
-                    {{ strtoupper($payment->payment_type) }}
-                </td>
+                        <th class="px-6 py-4 text-left text-xs text-gray-500 uppercase">
+                            Qty
+                        </th>
 
-                <td>
-                    Rp {{ number_format($payment->amount) }}
-                </td>
+                        <th class="px-6 py-4 text-left text-xs text-gray-500 uppercase">
+                            Harga
+                        </th>
 
-                <td>
-                    {{ strtoupper($payment->status) }}
-                </td>
+                        <th class="px-6 py-4 text-left text-xs text-gray-500 uppercase">
+                            Subtotal
+                        </th>
+                    </tr>
+                </thead>
 
-                <td>
+                <tbody class="divide-y divide-gray-100">
+
+                    @foreach($order->detail->accessories as $accessory)
+                    <tr>
+
+                        <td class="px-6 py-4 text-sm text-gray-700">
+                            {{ $accessory->name }}
+                        </td>
+
+                        <td class="px-6 py-4 text-sm text-gray-700">
+                            {{ $accessory->pivot->qty }}
+                        </td>
+
+                        <td class="px-6 py-4 text-sm text-gray-700">
+                            Rp {{ number_format($accessory->pivot->price,0,',','.') }}
+                        </td>
+
+                        <td class="px-6 py-4 text-sm font-semibold text-gray-800">
+                            Rp {{ number_format($accessory->pivot->subtotal,0,',','.') }}
+                        </td>
+
+                    </tr>
+                    @endforeach
+
+                </tbody>
+
+            </table>
+
+            @else
+
+            <div class="p-10 text-center text-gray-500">
+                Tidak ada aksesoris.
+            </div>
+
+            @endif
+
+        </div>
+    </div>
+
+    {{-- PEMBAYARAN --}}
+    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden">
+
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="font-semibold text-gray-800">
+                Pembayaran
+            </h2>
+        </div>
+
+        <div class="p-6 space-y-4">
+
+            @forelse($order->payments as $payment)
+
+            @php
+                $paymentStatusColor = match($payment->status) {
+                    'pending' => 'yellow',
+                    'approved' => 'green',
+                    'failed' => 'red',
+                    default => 'gray'
+                };
+            @endphp
+
+            <div class="border border-gray-100 rounded-2xl p-5">
+
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+
+                    <div>
+                        <h3 class="font-semibold text-gray-800 uppercase">
+                            {{ $payment->payment_type }}
+                        </h3>
+
+                        <p class="text-2xl font-bold text-indigo-700 mt-2">
+                            Rp {{ number_format($payment->amount,0,',','.') }}
+                        </p>
+                    </div>
+
+                    <span class="px-4 py-2 rounded-xl text-sm font-medium bg-{{ $paymentStatusColor }}-100 text-{{ $paymentStatusColor }}-700 w-fit">
+                        {{ strtoupper($payment->status) }}
+                    </span>
+
+                </div>
+
+                <div class="flex flex-wrap gap-3 mt-5">
 
                     @if($payment->payment_proof)
-
-                        <a href="{{ asset('storage/' . $payment->payment_proof) }}"
-                           target="_blank">
-
-                            Lihat Bukti
-
-                        </a>
-
-                    @else
-
-                        -
-
+                    <a href="{{ asset('storage/' . $payment->payment_proof) }}"
+                        target="_blank"
+                        class="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-sm transition">
+                        Lihat Bukti
+                    </a>
                     @endif
-
-                </td>
-
-                <td>
 
                     @if($payment->status == 'pending')
+                    <form action="{{ url('/admin/payments/' . $payment->id . '/approve') }}"
+                        method="POST">
+                        @csrf
 
-                        <form action="{{ url('/admin/payments/' . $payment->id . '/approve') }}"
-                              method="POST">
-
-                            @csrf
-
-                            <button type="submit">
-
-                                Konfirmasi
-
-                            </button>
-
-                        </form>
-
-                    @else
-
-                        -
-
+                        <button type="submit"
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm transition">
+                            Konfirmasi Pembayaran
+                        </button>
+                    </form>
                     @endif
 
-                </td>
+                </div>
 
-            </tr>
+            </div>
 
-        @endforeach
+            @empty
 
-    </table>
+            <div class="text-center py-10 text-gray-500">
+                Belum ada pembayaran.
+            </div>
 
-@else
+            @endforelse
 
-    <p>Belum ada pembayaran.</p>
+        </div>
+    </div>
 
-@endif
+</div>
 
-<br>
+{{-- MODAL --}}
+<div id="updateModal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
 
-{{-- ========================= --}}
-{{-- FORM UPDATE --}}
-{{-- ========================= --}}
-<h3>Update Pesanan</h3>
+    <div class="bg-white w-full max-w-xl rounded-2xl overflow-hidden">
 
-<form action="{{ url('/admin/orders/' . $order->id) }}"
-      method="POST">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
 
-    @csrf
-    @method('PUT')
+            <div>
+                <h2 class="font-semibold text-gray-800">
+                    Update Pesanan
+                </h2>
 
-    {{-- STATUS --}}
-    <label>Status</label>
+                <p class="text-sm text-gray-500 mt-1">
+                    Update informasi pesanan
+                </p>
+            </div>
 
-    <br><br>
+            <button onclick="closeUpdateModal()"
+                class="w-10 h-10 rounded-xl hover:bg-gray-100 text-gray-500 transition">
+                <i class="fas fa-times"></i>
+            </button>
 
-    <select name="status_id">
+        </div>
 
-        @foreach($statuses as $status)
+        <form action="{{ url('/admin/orders/' . $order->id) }}"
+            method="POST"
+            class="p-6 space-y-5">
 
-            <option
-                value="{{ $status->id }}"
-                @selected($order->status_id == $status->id)
-            >
-                {{ $status->name }}
-            </option>
+            @csrf
+            @method('PUT')
 
-        @endforeach
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Status Pesanan
+                </label>
 
-    </select>
+                <select name="status_id"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none">
 
-    <br><br>
+                    @foreach($statuses as $status)
+                    <option value="{{ $status->id }}"
+                        @selected($order->status_id == $status->id)>
+                        {{ $status->name }}
+                    </option>
+                    @endforeach
 
-    {{-- BIAYA LAIN --}}
-    <label>
-        Biaya Lain-lain
-    </label>
+                </select>
+            </div>
 
-    <br><br>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Biaya Lain-lain
+                </label>
 
-    <input type="number"
-           name="other_cost"
-           value="{{ $order->other_cost ?? 0 }}">
+                <input type="number"
+                    name="other_cost"
+                    value="{{ $order->other_cost ?? 0 }}"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none">
+            </div>
 
-    <br><br>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    DP (%)
+                </label>
 
-    {{-- DP --}}
-    <label>DP (%)</label>
+                <input type="number"
+                    name="dp_percent"
+                    value="{{ old('dp_percent', $order->dp_percent ?? 0) }}"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none">
+            </div>
 
-    <br><br>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Catatan Admin
+                </label>
 
-    <input type="number"
-           name="dp_percent"
-           min="0"
-           max="100"
-           value="{{ old('dp_percent', $order->dp_percent ?? 0) }}">
+                <textarea name="admin_notes"
+                    rows="4"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none resize-none">{{ $order->admin_notes }}</textarea>
+            </div>
 
-    <br>
+            <div class="flex justify-end gap-3 pt-2">
 
-    <small>
-        Persentase DP dari harga final
-    </small>
+                <button type="button"
+                    onclick="closeUpdateModal()"
+                    class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-medium text-gray-700 transition">
+                    Batal
+                </button>
 
-    <br><br>
+                <button type="submit"
+                    class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 rounded-xl text-sm font-medium text-white transition">
+                    Simpan Update
+                </button>
 
-    {{-- NOTES --}}
-    <label>Catatan Admin</label>
+            </div>
 
-    <br><br>
+        </form>
 
-    <textarea name="admin_notes"
-              rows="5"
-              style="width:100%;">{{ $order->admin_notes }}</textarea>
+    </div>
+</div>
 
-    <br><br>
+<script>
+    function openUpdateModal() {
+        const modal = document.getElementById('updateModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+    }
 
-    <button type="submit">
-        Update Pesanan
-    </button>
+    function closeUpdateModal() {
+        const modal = document.getElementById('updateModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+    }
 
-</form>
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('updateModal');
+
+        if (e.target === modal) {
+            closeUpdateModal();
+        }
+    });
+</script>
 
 @endsection

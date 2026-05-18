@@ -3,6 +3,7 @@
 <?php
 
 use App\Http\Controllers\AccessoryController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderAdminController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,44 +57,66 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 // ADMIN
 // ======================
 
-Route::middleware(['auth', 'role:admin'])
+    Route::middleware([
+        'auth',
+        'role:admin'
+    ])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+        
+    Route::get(
+        '/',
+        [DashboardController::class, 'index']
+    )->name('dashboard');
 
-        Route::get('/', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+    
+    Route::resource(
+        'products',
+        ProductController::class
+    );
 
-        Route::resource('products', ProductController::class);
-        // Route::get('/orders', [OrderController::class, 'index']);
-        Route::resource('accessories', AccessoryController::class);
-        Route::resource('materials',MaterialController::class);
+    
+    Route::resource(
+        'accessories',
+        AccessoryController::class
+    );
 
-        // 
-        Route::get(
+    // =========================
+    // MATERIAL
+    // =========================
+    Route::resource(
+        'materials',
+        MaterialController::class
+    );
+
+    // =========================
+    // ORDER ADMIN
+    // =========================
+    Route::get(
         '/orders',
         [OrderAdminController::class, 'index']
-    );
+    )->name('orders.index');
 
     Route::get(
         '/orders/{order}',
         [OrderAdminController::class, 'show']
-    );
+    )->name('orders.show');
 
     Route::put(
         '/orders/{order}',
         [OrderAdminController::class, 'update']
-    );
-    });
+    )->name('orders.update');
 
+    // =========================
+    // APPROVE PAYMENT
+    // =========================
     Route::post(
-    '/admin/payments/{payment}/approve',
-    [OrderAdminController::class, 'approvePayment']
-)->middleware([
-    'auth',
-    'role:admin'
-]);
+        '/payments/{payment}/approve',
+        [OrderAdminController::class, 'approvePayment']
+    )->name('payments.approve');
+
+});
 
 
 // ======================
