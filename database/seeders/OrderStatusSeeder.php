@@ -16,62 +16,50 @@ class OrderStatusSeeder extends Seeder
 
             [
                 'name' => 'Pending',
-                'slug' => 'pending'
+                'slug' => 'pending',
+                'description' => 'Pesanan baru masuk'
             ],
 
             [
-                'name' => 'Menunggu Konfirmasi',
-                'slug' => 'menunggu_konfirmasi'
+                'name' => 'Dicek Admin',
+                'slug' => 'checking',
+                'description' => 'Pesanan sedang diperiksa admin'
             ],
 
             [
-    'name' => 'Menunggu Konfirmasi Pembayaran',
-    'slug' => 'menunggu_konfirmasi_pembayaran'
-],
-
-            [
-                'name' => 'Menunggu DP',
-                'slug' => 'menunggu_dp'
-            ],
-
-            [
-                'name' => 'DP Dicek',
-                'slug' => 'dp_dicek'
+                'name' => 'Menunggu Pembayaran',
+                'slug' => 'payment',
+                'description' => 'Menunggu pembayaran customer'
             ],
 
             [
                 'name' => 'Diproses',
-                'slug' => 'diproses'
+                'slug' => 'process',
+                'description' => 'Pesanan sedang dikerjakan'
             ],
 
             [
-                'name' => 'Menunggu Pelunasan',
-                'slug' => 'menunggu_pelunasan'
+                'name' => 'Selesai Produksi',
+                'slug' => 'finished',
+                'description' => 'Produk selesai dibuat'
             ],
 
             [
-                'name' => 'Pelunasan Dicek',
-                'slug' => 'pelunasan_dicek'
-            ],
-
-            [
-                'name' => 'Lunas',
-                'slug' => 'lunas'
+                'name' => 'Siap Diambil',
+                'slug' => 'ready_pickup',
+                'description' => 'Pesanan siap diambil customer'
             ],
 
             [
                 'name' => 'Selesai',
-                'slug' => 'selesai'
-            ],
-
-            [
-                'name' => 'Dikirim',
-                'slug' => 'dikirim'
+                'slug' => 'completed',
+                'description' => 'Pesanan selesai'
             ],
 
             [
                 'name' => 'Dibatalkan',
-                'slug' => 'dibatalkan'
+                'slug' => 'cancelled',
+                'description' => 'Pesanan dibatalkan'
             ],
         ];
 

@@ -30,6 +30,8 @@ return new class extends Migration
             // rekening tujuan
             $table->string('bank_name')
                 ->nullable();
+                 
+
 
             $table->string('account_name')
                 ->nullable();

@@ -37,11 +37,11 @@ class OrderAdminController extends Controller
     {
         // =========================
         // AUTO UBAH STATUS
-        // pending -> menunggu konfirmasi
+        // pending -> checking
         // =========================
-        $waitingConfirmationId = OrderStatus::where(
+        $checkingId = OrderStatus::where(
             'slug',
-            'menunggu_konfirmasi'
+            'checking'
         )->value('id');
 
         if (
@@ -50,8 +50,10 @@ class OrderAdminController extends Controller
         ) {
 
             $order->update([
-                'status_id' => $waitingConfirmationId
+                'status_id' => $checkingId
             ]);
+
+            $order->refresh();
         }
 
         // =========================
@@ -59,7 +61,7 @@ class OrderAdminController extends Controller
         // =========================
         $order->load([
             'user',
-            'product',
+            'detail.product',
             'detail.material',
             'detail.accessories',
             'payments',
@@ -216,68 +218,20 @@ class OrderAdminController extends Controller
         ];
 
         // =========================
-        // STATUS SELESAI
+        // STATUS COMPLETED
         // =========================
-        $statusSelesai = OrderStatus::where(
+        $statusCompleted = OrderStatus::where(
             'slug',
-            'selesai'
+            'completed'
         )->first();
 
         if (
-            $statusSelesai &&
-            $request->status_id == $statusSelesai->id
+            $statusCompleted &&
+            $request->status_id == $statusCompleted->id
         ) {
 
             $data['finished_at'] = now();
         }
-
-        // =========================
-// CEK STATUS SELESAI
-// =========================
-$statusSelesai = OrderStatus::where(
-    'slug',
-    'selesai'
-)->first();
-
-$statusMenungguPelunasan = OrderStatus::where(
-    'slug',
-    'menunggu_pelunasan'
-)->first();
-
-// pembayaran terakhir
-$lastPayment = $order
-    ->payments()
-    ->latest()
-    ->first();
-
-if (
-    $statusSelesai &&
-    $request->status_id == $statusSelesai->id
-) {
-
-    // =========================
-    // JIKA PAYMENT DP
-    // =========================
-    if (
-        $lastPayment &&
-        $lastPayment->payment_type == 'dp'
-    ) {
-
-        // ubah jadi menunggu pelunasan
-        if ($statusMenungguPelunasan) {
-
-            $data['status_id'] =
-                $statusMenungguPelunasan->id;
-        }
-
-    } else {
-
-        // =========================
-        // LANGSUNG SELESAI
-        // =========================
-        $data['finished_at'] = now();
-    }
-}
 
         $order->update($data);
 
@@ -287,64 +241,89 @@ if (
         );
     }
 
+    // =========================
+    // APPROVE PAYMENT
+    // =========================
     public function approvePayment(
-    Payment $payment
-) {
-
-    $order = $payment->order;
-
-    $payment->update([
-        'status' => 'approved'
-    ]);
-
-    // =========================
-    // STATUS
-    // =========================
-    $statusDiproses = OrderStatus::where(
-        'slug',
-        'diproses'
-    )->first();
-
-    $statusSelesai = OrderStatus::where(
-        'slug',
-        'selesai'
-    )->first();
-
-    // =========================
-    // JIKA PELUNASAN
-    // =========================
-    if (
-        $payment->payment_type == 'lunas'
+        Payment $payment
     ) {
 
-        if ($statusSelesai) {
-
-            $order->update([
-
-                'status_id'
-                    => $statusSelesai->id,
-
-                'finished_at'
-                    => now(),
-            ]);
-        }
-
-    } else {
+        $order = $payment->order;
 
         // =========================
-        // JIKA DP
+        // APPROVE PAYMENT
         // =========================
-        if ($statusDiproses) {
+        $payment->update([
 
-            $order->update([
-                'status_id' => $statusDiproses->id
-            ]);
+            'status' => 'approved',
+
+            'confirmed_at' => now(),
+        ]);
+
+        // =========================
+        // STATUS PROCESS
+        // =========================
+        $statusProcess = OrderStatus::where(
+            'slug',
+            'process'
+        )->first();
+
+        // =========================
+        // STATUS READY PICKUP
+        // =========================
+        $statusReadyPickup = OrderStatus::where(
+            'slug',
+            'ready_pickup'
+        )->first();
+
+        // =========================
+        // PAYMENT TYPE DP
+        // =========================
+        if (
+            $payment->payment_type == 'dp'
+        ) {
+
+            if ($statusProcess) {
+
+                $order->update([
+                    'status_id' => $statusProcess->id
+                ]);
+            }
         }
+
+        // =========================
+        // PAYMENT TYPE PELUNASAN
+        // =========================
+        elseif (
+            $payment->payment_type == 'pelunasan'
+        ) {
+
+            if ($statusReadyPickup) {
+
+                $order->update([
+                    'status_id' => $statusReadyPickup->id
+                ]);
+            }
+        }
+
+        // =========================
+        // PAYMENT TYPE FULL PAYMENT
+        // =========================
+        elseif (
+            $payment->payment_type == 'full_payment'
+        ) {
+
+            if ($statusProcess) {
+
+                $order->update([
+                    'status_id' => $statusProcess->id
+                ]);
+            }
+        }
+
+        return back()->with(
+            'success',
+            'Pembayaran berhasil dikonfirmasi'
+        );
     }
-
-    return back()->with(
-        'success',
-        'Pembayaran berhasil dikonfirmasi'
-    );
-}
 }

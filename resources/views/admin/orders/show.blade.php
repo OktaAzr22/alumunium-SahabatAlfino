@@ -1,510 +1,457 @@
 @extends('layouts.admin')
 
 @section('content')
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
 
-<div class="max-w-7xl mx-auto px-4 md:px-6 py-6">
+    <div class="max-w-7xl mx-auto space-y-6">
 
-    {{-- HEADER --}}
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-
-        <div>
-            <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                <a href="{{ url('/admin/orders') }}" class="hover:text-indigo-600">
-                    Pesanan
-                </a>
-
-                <i class="fas fa-chevron-right text-xs"></i>
-
-                <span class="text-indigo-600 font-medium">
-                    Detail Pesanan
-                </span>
-            </div>
-
-            <h1 class="text-2xl font-bold text-gray-800">
-                Detail Pesanan
-            </h1>
-
-            <p class="text-sm text-gray-500 mt-1">
-                Informasi lengkap pesanan customer
-            </p>
-        </div>
-
-        <div class="flex flex-wrap gap-3">
-
-            <button onclick="openUpdateModal()"
-                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition flex items-center gap-2">
-                <i class="fas fa-edit text-xs"></i>
-                Update Pesanan
-            </button>
-
-            <a href="{{ url('/admin/orders') }}"
-                class="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 rounded-xl text-sm font-medium text-gray-700 transition flex items-center gap-2">
-                <i class="fas fa-arrow-left text-xs"></i>
-                Kembali
-            </a>
-
-        </div>
-    </div>
-
-    {{-- ALERT --}}
-    @if(session('success'))
-    <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm flex items-center gap-3">
-        <i class="fas fa-check-circle"></i>
-        {{ session('success') }}
-    </div>
-    @endif
-
-    {{-- BANNER --}}
-    <div class="mb-6 bg-indigo-600 rounded-2xl p-6 text-white">
-
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+        <!-- HEADER -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
             <div>
-                <p class="text-indigo-200 text-sm mb-1">
-                    STATUS PESANAN
-                </p>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+                    Detail Pesanan
+                </h1>
 
-                <h2 class="text-2xl font-bold mb-2">
-                    {{ strtoupper($order->status->name ?? '-') }}
-                </h2>
-
-                <p class="text-indigo-100 text-sm max-w-2xl">
-                    Pastikan status pesanan selalu diperbarui agar customer dapat memantau proses pengerjaan secara realtime.
+                <p class="text-sm text-gray-500 mt-1">
+                    Informasi lengkap pesanan customer
                 </p>
             </div>
 
-            <div class="bg-white/10 rounded-2xl px-5 py-4 backdrop-blur-sm">
-                <p class="text-indigo-200 text-xs mb-1">
-                    Dibuat Pada
-                </p>
+            <div class="flex items-center gap-3">
 
-                <h3 class="font-bold text-lg">
-                    {{ $order->created_at ? $order->created_at->format('d M Y') : '-' }}
-                </h3>
+                <button onclick="openUpdateModal()"
+                        class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition">
+                    Update Pesanan
+                </button>
 
-                <p class="text-sm text-indigo-100">
-                    {{ $order->created_at ? $order->created_at->format('H:i') : '-' }} WIB
-                </p>
-            </div>
-
-        </div>
-    </div>
-
-    {{-- INFORMASI PESANAN --}}
-    <div class="bg-white border border-gray-100 rounded-2xl mb-6 overflow-hidden">
-
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h2 class="font-semibold text-gray-800">
-                Informasi Pesanan
-            </h2>
-        </div>
-
-        <div class="p-6">
-
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-
-                <div class="bg-gray-50 rounded-xl p-4">
-                    <p class="text-xs text-gray-400 mb-1">
-                        Kode Order
-                    </p>
-
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->code }}
-                    </h3>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-4">
-                    <p class="text-xs text-gray-400 mb-1">
-                        Customer
-                    </p>
-
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->user->name }}
-                    </h3>
-
-                    <p class="text-sm text-gray-500 mt-1">
-                        {{ $order->user->email ?? '-' }}
-                    </p>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-4">
-                    <p class="text-xs text-gray-400 mb-1">
-                        Estimasi Sistem
-                    </p>
-
-                    <h3 class="font-bold text-gray-800">
-                        Rp {{ number_format($estimatedPrice,0,',','.') }}
-                    </h3>
-                </div>
-
-                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
-                    <p class="text-xs text-indigo-500 mb-1">
-                        Harga Final
-                    </p>
-
-                    <h3 class="font-bold text-indigo-700 text-lg">
-                        Rp {{ number_format($order->final_price ?? 0,0,',','.') }}
-                    </h3>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-4">
-                    <p class="text-xs text-gray-400 mb-1">
-                        Biaya Tambahan
-                    </p>
-
-                    <h3 class="font-semibold text-gray-800">
-                        Rp {{ number_format($order->other_cost ?? 0,0,',','.') }}
-                    </h3>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-4">
-                    <p class="text-xs text-gray-400 mb-1">
-                        DP
-                    </p>
-
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->dp_percent ?? 0 }}%
-                    </h3>
-
-                    <p class="text-sm text-gray-500 mt-1">
-                        Rp {{ number_format($order->dp_amount ?? 0,0,',','.') }}
-                    </p>
-                </div>
+                <a href="{{ url('/admin/orders') }}"
+                   class="px-5 py-2.5 border border-gray-300 bg-white hover:bg-gray-100 rounded-xl text-sm font-medium transition text-gray-700">
+                    Kembali
+                </a>
 
             </div>
 
         </div>
-    </div>
 
-    {{-- DETAIL PRODUK --}}
-    <div class="bg-white border border-gray-100 rounded-2xl mb-6 overflow-hidden">
-
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h2 class="font-semibold text-gray-800">
-                Detail Produk
-            </h2>
+        @if(session('success'))
+        <div class="bg-green-50 border border-green-200 text-green-700 px-5 py-4 rounded-2xl text-sm">
+            {{ session('success') }}
         </div>
+        @endif
 
-        <div class="p-6">
+        <!-- GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <!-- LEFT -->
+            <div class="lg:col-span-2 space-y-6">
 
-                <div>
-                    <p class="text-xs text-gray-400 mb-1">
-                        Produk
-                    </p>
+                <!-- INFORMASI -->
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->detail->product->name ?? '-' }}
-                    </h3>
+                    <div class="px-6 py-4 border-b border-gray-100">
+                        <h2 class="font-bold text-gray-800">
+                            Informasi Pesanan
+                        </h2>
+                    </div>
+
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Kode Order
+                            </p>
+
+                            <h3 class="font-semibold text-gray-800">
+                                {{ $order->code }}
+                            </h3>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Customer
+                            </p>
+
+                            <h3 class="font-semibold text-gray-800">
+                                {{ $order->user->name ?? '-' }}
+                            </h3>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Status
+                            </p>
+
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
+                                {{ $order->status->name ?? '-' }}
+                            </span>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Estimasi
+                            </p>
+
+                            <h3 class="font-bold text-gray-800 whitespace-nowrap">
+                                Rp {{ number_format($estimatedPrice,0,',','.') }}
+                            </h3>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Harga Final
+                            </p>
+
+                            <h3 class="font-bold text-indigo-700 whitespace-nowrap">
+                                Rp {{ number_format($order->final_price ?? 0,0,',','.') }}
+                            </h3>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                DP
+                            </p>
+
+                            <h3 class="font-semibold text-gray-800 whitespace-nowrap">
+                                {{ $order->dp_percent ?? 0 }}% - Rp {{ number_format($order->dp_amount ?? 0,0,',','.') }}
+                            </h3>
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div>
-                    <p class="text-xs text-gray-400 mb-1">
-                        Ukuran
-                    </p>
+                <!-- PRODUK -->
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->detail->length }} x
-                        {{ $order->detail->width }} x
-                        {{ $order->detail->height }} cm
-                    </h3>
+                    <div class="px-6 py-4 border-b border-gray-100">
+                        <h2 class="font-bold text-gray-800">
+                            Detail Produk
+                        </h2>
+                    </div>
+
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Produk
+                            </p>
+
+                            <h3 class="font-semibold text-gray-800">
+                                {{ $order->detail->product->name ?? '-' }}
+                            </h3>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Material
+                            </p>
+
+                            <h3 class="font-semibold text-gray-800">
+                                {{ $order->detail->material->name ?? '-' }}
+                            </h3>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Ukuran
+                            </p>
+
+                            <h3 class="font-semibold text-gray-800">
+                                {{ $order->detail->length ?? 0 }} x {{ $order->detail->width ?? 0 }} x {{ $order->detail->height ?? 0 }} cm
+                            </h3>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1 uppercase">
+                                Qty
+                            </p>
+
+                            <h3 class="font-semibold text-gray-800">
+                                {{ $order->detail->qty ?? 0 }} pcs
+                            </h3>
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div>
-                    <p class="text-xs text-gray-400 mb-1">
-                        Luas
-                    </p>
+                <!-- PEMBAYARAN -->
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->detail->area }} m²
-                    </h3>
-                </div>
+                    <div class="px-6 py-4 border-b border-gray-100">
+                        <h2 class="font-bold text-gray-800">
+                            Pembayaran
+                        </h2>
+                    </div>
 
-                <div>
-                    <p class="text-xs text-gray-400 mb-1">
-                        Qty
-                    </p>
+                    <div class="p-6 space-y-4">
 
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->detail->qty }} pcs
-                    </h3>
-                </div>
+                        @forelse($order->payments as $payment)
 
-                <div>
-                    <p class="text-xs text-gray-400 mb-1">
-                        Material
-                    </p>
+                        <div class="border border-gray-100 rounded-2xl p-5 bg-gray-50">
 
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->detail->material->name ?? '-' }}
-                    </h3>
-                </div>
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-                <div>
-                    <p class="text-xs text-gray-400 mb-1">
-                        Kebutuhan Material
-                    </p>
+                                <div>
+                                    <h3 class="font-bold text-gray-800 uppercase">
+                                        {{ $payment->payment_type }}
+                                    </h3>
 
-                    <h3 class="font-semibold text-gray-800">
-                        {{ $order->detail->material_qty }}
-                        {{ $order->detail->material->unit ?? '' }}
-                    </h3>
+                                    <p class="text-indigo-700 font-bold text-xl mt-2 whitespace-nowrap">
+                                        Rp {{ number_format($payment->amount,0,',','.') }}
+                                    </p>
+                                </div>
+
+                                <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold uppercase">
+                                    {{ $payment->status }}
+                                </span>
+
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-3 mt-5">
+
+                                @if($payment->payment_proof)
+                                <a href="{{ asset('storage/' . $payment->payment_proof) }}"
+                                   target="_blank"
+                                   class="px-4 py-2 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-sm font-medium transition">
+                                    Lihat Bukti
+                                </a>
+                                @endif
+
+                                @if($payment->status == 'pending')
+                                <form action="{{ url('/admin/payments/' . $payment->id . '/approve') }}"
+                                      method="POST">
+                                    @csrf
+
+                                    <button type="submit"
+                                            class="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition">
+                                        Konfirmasi
+                                    </button>
+                                </form>
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                        @empty
+
+                        <div class="text-center py-12 text-gray-500 text-sm">
+                            Belum ada pembayaran
+                        </div>
+
+                        @endforelse
+
+                    </div>
+
                 </div>
 
             </div>
 
-        </div>
-    </div>
+            <!-- RIGHT -->
+            <div>
 
-    {{-- AKSESORIS --}}
-    <div class="bg-white border border-gray-100 rounded-2xl mb-6 overflow-hidden">
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden sticky top-5">
 
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h2 class="font-semibold text-gray-800">
-                Aksesoris
-            </h2>
-        </div>
+                    <div class="px-6 py-4 border-b border-gray-100">
+                        <h2 class="font-bold text-gray-800">
+                            Catatan Admin
+                        </h2>
+                    </div>
 
-        <div class="overflow-x-auto">
-
-            @if($order->detail->accessories->count())
-
-            <table class="min-w-full">
-
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-xs text-gray-500 uppercase">
-                            Nama
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs text-gray-500 uppercase">
-                            Qty
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs text-gray-500 uppercase">
-                            Harga
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs text-gray-500 uppercase">
-                            Subtotal
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody class="divide-y divide-gray-100">
-
-                    @foreach($order->detail->accessories as $accessory)
-                    <tr>
-
-                        <td class="px-6 py-4 text-sm text-gray-700">
-                            {{ $accessory->name }}
-                        </td>
-
-                        <td class="px-6 py-4 text-sm text-gray-700">
-                            {{ $accessory->pivot->qty }}
-                        </td>
-
-                        <td class="px-6 py-4 text-sm text-gray-700">
-                            Rp {{ number_format($accessory->pivot->price,0,',','.') }}
-                        </td>
-
-                        <td class="px-6 py-4 text-sm font-semibold text-gray-800">
-                            Rp {{ number_format($accessory->pivot->subtotal,0,',','.') }}
-                        </td>
-
-                    </tr>
-                    @endforeach
-
-                </tbody>
-
-            </table>
-
-            @else
-
-            <div class="p-10 text-center text-gray-500">
-                Tidak ada aksesoris.
-            </div>
-
-            @endif
-
-        </div>
-    </div>
-
-    {{-- PEMBAYARAN --}}
-    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden">
-
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h2 class="font-semibold text-gray-800">
-                Pembayaran
-            </h2>
-        </div>
-
-        <div class="p-6 space-y-4">
-
-            @forelse($order->payments as $payment)
-
-            @php
-                $paymentStatusColor = match($payment->status) {
-                    'pending' => 'yellow',
-                    'approved' => 'green',
-                    'failed' => 'red',
-                    default => 'gray'
-                };
-            @endphp
-
-            <div class="border border-gray-100 rounded-2xl p-5">
-
-                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-
-                    <div>
-                        <h3 class="font-semibold text-gray-800 uppercase">
-                            {{ $payment->payment_type }}
-                        </h3>
-
-                        <p class="text-2xl font-bold text-indigo-700 mt-2">
-                            Rp {{ number_format($payment->amount,0,',','.') }}
+                    <div class="p-6">
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            {{ $order->admin_notes ?? 'Belum ada catatan admin.' }}
                         </p>
                     </div>
 
-                    <span class="px-4 py-2 rounded-xl text-sm font-medium bg-{{ $paymentStatusColor }}-100 text-{{ $paymentStatusColor }}-700 w-fit">
-                        {{ strtoupper($payment->status) }}
-                    </span>
-
-                </div>
-
-                <div class="flex flex-wrap gap-3 mt-5">
-
-                    @if($payment->payment_proof)
-                    <a href="{{ asset('storage/' . $payment->payment_proof) }}"
-                        target="_blank"
-                        class="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-sm transition">
-                        Lihat Bukti
-                    </a>
-                    @endif
-
-                    @if($payment->status == 'pending')
-                    <form action="{{ url('/admin/payments/' . $payment->id . '/approve') }}"
-                        method="POST">
-                        @csrf
-
-                        <button type="submit"
-                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm transition">
-                            Konfirmasi Pembayaran
-                        </button>
-                    </form>
-                    @endif
-
                 </div>
 
             </div>
-
-            @empty
-
-            <div class="text-center py-10 text-gray-500">
-                Belum ada pembayaran.
-            </div>
-
-            @endforelse
 
         </div>
+
     </div>
 
 </div>
 
-{{-- MODAL --}}
+<!-- MODAL -->
 <div id="updateModal"
-    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+     class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center p-4">
 
-    <div class="bg-white w-full max-w-xl rounded-2xl overflow-hidden">
+    @php
+        $lockedStatuses = [
+            'dp_dicek',
+            'diproses',
+            'menunggu_pelunasan',
+            'pelunasan_dicek',
+            'lunas',
+            'selesai',
+            'siap_diambil',
+            'dikirim'
+        ];
 
+        $isLocked = in_array(
+            $order->status->slug ?? '',
+            $lockedStatuses
+        );
+
+        $blockedStatuses = [
+        'pending',
+        'menunggu_konfirmasi',
+        'menunggu_konfirmasi_pembayaran',
+        'menunggu_dp'
+    ];
+    @endphp
+
+    <div class="bg-white rounded-2xl w-full max-w-xl overflow-hidden shadow-xl">
+
+        <!-- HEADER -->
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
 
-            <div>
-                <h2 class="font-semibold text-gray-800">
-                    Update Pesanan
-                </h2>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Update informasi pesanan
-                </p>
-            </div>
+            <h2 class="font-bold text-gray-800 text-lg">
+                Update Pesanan
+            </h2>
 
             <button onclick="closeUpdateModal()"
-                class="w-10 h-10 rounded-xl hover:bg-gray-100 text-gray-500 transition">
+                    type="button"
+                    class="w-10 h-10 rounded-xl hover:bg-gray-100 text-gray-500 transition">
                 <i class="fas fa-times"></i>
             </button>
 
         </div>
 
+        <!-- FORM -->
         <form action="{{ url('/admin/orders/' . $order->id) }}"
-            method="POST"
-            class="p-6 space-y-5">
+              method="POST"
+              class="p-6 space-y-5">
 
             @csrf
             @method('PUT')
 
+            <!-- STATUS -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Status Pesanan
+
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Status
                 </label>
 
-                <select name="status_id"
-                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none">
+               <select name="status_id"
+        class="w-full px-4 py-3 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-indigo-200">
 
-                    @foreach($statuses as $status)
-                    <option value="{{ $status->id }}"
-                        @selected($order->status_id == $status->id)>
-                        {{ $status->name }}
-                    </option>
-                    @endforeach
+    @foreach($statuses as $status)
 
-                </select>
+        <option value="{{ $status->id }}"
+            @selected($order->status_id == $status->id)
+
+            @if(
+                $isLocked &&
+                in_array($status->slug, $blockedStatuses)
+            )
+                disabled
+            @endif>
+
+            {{ $status->name }}
+
+            @if(
+                $isLocked &&
+                in_array($status->slug, $blockedStatuses)
+            )
+                (Tidak tersedia)
+            @endif
+
+        </option>
+
+    @endforeach
+
+</select>
+
             </div>
 
+            <!-- BIAYA LAIN -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
                     Biaya Lain-lain
                 </label>
 
                 <input type="number"
-                    name="other_cost"
-                    value="{{ $order->other_cost ?? 0 }}"
-                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none">
+                       name="other_cost"
+                       value="{{ $order->other_cost ?? 0 }}"
+                       @readonly($isLocked)
+                       class="w-full px-4 py-3 rounded-xl border border-gray-300 outline-none
+                              {{ $isLocked
+                                  ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                                  : 'focus:ring-2 focus:ring-indigo-200 bg-white'
+                              }}">
+
             </div>
 
+            <!-- DP -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
                     DP (%)
                 </label>
 
                 <input type="number"
-                    name="dp_percent"
-                    value="{{ old('dp_percent', $order->dp_percent ?? 0) }}"
-                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none">
+                       name="dp_percent"
+                       value="{{ $order->dp_percent ?? 0 }}"
+                       @readonly($isLocked)
+                       class="w-full px-4 py-3 rounded-xl border border-gray-300 outline-none
+                              {{ $isLocked
+                                  ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                                  : 'focus:ring-2 focus:ring-indigo-200 bg-white'
+                              }}">
+
             </div>
 
+            <!-- CATATAN ADMIN -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
                     Catatan Admin
                 </label>
 
                 <textarea name="admin_notes"
-                    rows="4"
-                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none resize-none">{{ $order->admin_notes }}</textarea>
+                          rows="4"
+                          @readonly($isLocked)
+                          class="w-full px-4 py-3 rounded-xl border border-gray-300 resize-none outline-none
+                                 {{ $isLocked
+                                     ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                                     : 'focus:ring-2 focus:ring-indigo-200 bg-white'
+                                 }}">{{ $order->admin_notes }}</textarea>
+
             </div>
 
-            <div class="flex justify-end gap-3 pt-2">
+            <!-- INFO LOCK -->
+            @if($isLocked)
+
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm rounded-xl px-4 py-3">
+
+                    Data biaya dan DP sudah dikunci karena pesanan sudah masuk tahap pembayaran/proses.
+
+                </div>
+
+            @endif
+
+            <!-- BUTTON -->
+            <div class="flex items-center justify-end gap-3">
 
                 <button type="button"
-                    onclick="closeUpdateModal()"
-                    class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-medium text-gray-700 transition">
+                        onclick="closeUpdateModal()"
+                        class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition">
+
                     Batal
+
                 </button>
 
                 <button type="submit"
-                    class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 rounded-xl text-sm font-medium text-white transition">
-                    Simpan Update
+                        class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition">
+
+                    Simpan
+
                 </button>
 
             </div>
@@ -512,30 +459,18 @@
         </form>
 
     </div>
+
 </div>
 
 <script>
     function openUpdateModal() {
-        const modal = document.getElementById('updateModal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.classList.add('overflow-hidden');
+        document.getElementById('updateModal').classList.remove('hidden');
+        document.getElementById('updateModal').classList.add('flex');
     }
 
     function closeUpdateModal() {
-        const modal = document.getElementById('updateModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.classList.remove('overflow-hidden');
+        document.getElementById('updateModal').classList.add('hidden');
+        document.getElementById('updateModal').classList.remove('flex');
     }
-
-    window.addEventListener('click', function(e) {
-        const modal = document.getElementById('updateModal');
-
-        if (e.target === modal) {
-            closeUpdateModal();
-        }
-    });
 </script>
-
 @endsection
