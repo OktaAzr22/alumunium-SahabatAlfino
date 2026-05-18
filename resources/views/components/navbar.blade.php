@@ -16,9 +16,7 @@
                     Sahabat<span class="text-sky-600">Alfino</span>
                 </a>
 
-                <span class="hidden md:inline-block text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">
-                    Aluminium Custom
-                </span>
+                
 
             </div>
 
@@ -75,6 +73,7 @@
 
                     <input
                         type="text"
+                        id="trackingInput"
                         placeholder="Punya Resi...?"
                         class="outline-none text-sm bg-transparent w-40"
                     >

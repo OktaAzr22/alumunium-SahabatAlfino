@@ -399,5 +399,30 @@ public function showMyOrder(Order $order)
         );
     }
 
+   public function track($code)
+{
+    $order = Order::with([
+        'product',
+        'status',
+    ])
+    ->where('code', $code)
+    ->first();
+
+    if (!$order) {
+
+        return response()->json([
+            'success' => false
+        ]);
+    }
+
+    $statuses = \App\Models\OrderStatus::all();
+
+    return response()->json([
+        'success' => true,
+        'order' => $order,
+        'statuses' => $statuses
+    ]);
+}
+
     
 }

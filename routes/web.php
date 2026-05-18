@@ -21,6 +21,11 @@ Route::get('/products/{product}', [
     ProductController::class,
     'publicShow'
 ]);
+
+Route::get(
+    '/track-order/{code}',
+    [OrderController::class, 'track']
+);
     
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -64,7 +69,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        
+
     Route::get(
         '/',
         [DashboardController::class, 'index']
