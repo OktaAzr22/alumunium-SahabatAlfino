@@ -12,6 +12,7 @@
         description="Kelola pesanan furnitur aluminium Anda dengan mudah."
         image="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1600&auto=format&fit=crop"
     />
+    <x-session-alert />
 
     <!-- Statistik -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">

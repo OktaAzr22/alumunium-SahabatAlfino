@@ -15,7 +15,6 @@
         <x-breadcrumb />
         <x-session-alert />
 
-        <!-- TABLE CARD -->
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
             <div class="px-6 py-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -42,7 +41,6 @@
 
             </div>
 
-            <!-- TABLE -->
             <div class="overflow-x-auto">
 
                 <table class="min-w-full">

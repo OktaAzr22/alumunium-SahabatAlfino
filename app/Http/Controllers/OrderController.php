@@ -344,11 +344,12 @@ if ($request->accessories) {
             ]);
         });
 
-        return redirect('/orders/history')
-            ->with(
-                'success',
-                'Pesanan berhasil dibuat'
-            );
+       return redirect()
+        ->route('user.dashboard')
+        ->with(
+            'success',
+            'Pesanan berhasil dibuat'
+        );
     }
 
     // =========================

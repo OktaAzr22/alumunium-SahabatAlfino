@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+<div class="min-h-screen bg-red-50 p-4 md:p-6">
 
     <div class="max-w-7xl mx-auto space-y-6">
 

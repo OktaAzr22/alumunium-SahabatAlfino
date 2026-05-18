@@ -1,4 +1,4 @@
-<div class="relative overflow-hidden rounded-3xl shadow-xl">
+<div class="relative overflow-hidden rounded-3xl shadow-xl mb-4">
 
     <img 
         src="{{ $image ?? 'https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1600&auto=format&fit=crop' }}"

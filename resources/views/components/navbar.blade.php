@@ -30,14 +30,29 @@
                     Beranda
                 </a>
 
-                <a
-                    href="#produk-user"
-                    class="hover:text-sky-600 transition"
-                >
-                    Produk
-                </a>
+                @guest
 
-                {{-- BELUM LOGIN --}}
+                    <a
+                        href="#produk-user"
+                        class="hover:text-sky-600 transition"
+                    >
+                        Produk
+                    </a>
+
+                @endguest
+
+                @auth
+
+                    <a
+                        href="{{ url('/products') }}"
+                        class="hover:text-sky-600 transition"
+                    >
+                        Produk
+                    </a>
+
+                @endauth
+
+                
                 @guest
 
                     <a
